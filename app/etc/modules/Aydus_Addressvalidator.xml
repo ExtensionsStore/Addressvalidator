@@ -1,0 +1,18 @@
+<?xml version="1.0"?>
+<!-- 
+/**
+ * Address Validator module
+ *
+ * @category   Aydus
+ * @package	   Aydus_Addressvalidator
+ * @author     Aydus Consulting <davidt@aydus.com>
+ */
+-->
+<config>
+    <modules>
+        <Aydus_Addressvalidator>
+            <active>true</active>
+            <codePool>local</codePool>
+        </Aydus_Addressvalidator>     
+    </modules>
+</config>
