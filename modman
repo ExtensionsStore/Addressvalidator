@@ -1,9 +1,7 @@
-app/code/local/Aydus/Addressvalidator                                         app/code/local/Aydus/Addressvalidator/
+app/code/community/Aydus/Addressvalidator                                     app/code/community/Aydus/Addressvalidator/
 app/design/frontend/base/default/layout/aydus/addressvalidator.xml            app/design/frontend/base/default/layout/aydus/
 app/design/frontend/base/default/template/aydus/addressvalidator              app/design/frontend/base/default/template/aydus/addressvalidator/
 app/etc/modules/Aydus_Addressvalidator.xml                                    app/etc/modules/
 skin/frontend/base/default/css/aydus/addressvalidator.css                     skin/frontend/base/default/css/aydus/
 skin/frontend/base/default/js/aydus/addressvalidator.js                       skin/frontend/base/default/js/aydus/
 skin/frontend/base/default/js/aydus/addressvalidator/address.js               skin/frontend/base/default/js/aydus/addressvalidator/
-
-@shell rm -rf $PROJECT/var/cache/*
