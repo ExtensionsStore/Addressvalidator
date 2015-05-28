@@ -3,14 +3,11 @@
  * Address Validator setup
  *
  * @category   Aydus
- * @package	   Aydus_Addressvalidator
- * @author     Aydus Consulting <davidt@aydus.com>
+ * @package    Aydus_Addressvalidator
+ * @author     Aydus <davidt@aydus.com>
  */
 
 $this->startSetup();
-if (Mage::app()->getStore()->isAdmin()){
-	echo 'Started Address Validator Setup...<br />';
-}
 
 $this->run("CREATE TABLE IF NOT EXISTS {$this->getTable('aydus_addressvalidator_responses')} (
 `hash` VARCHAR(32) NOT NULL,
@@ -33,9 +30,5 @@ $this->run("CREATE TABLE IF NOT EXISTS {$this->getTable('aydus_addressvalidator_
 `date_created` DATETIME NOT NULL,
 PRIMARY KEY ( `hash` )
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8;");
-
-if (Mage::app()->getStore()->isAdmin()){
-	echo 'Ended Address Validator Setup<br />';
-}
 
 $this->endSetup();
