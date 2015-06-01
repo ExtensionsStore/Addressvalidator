@@ -4,8 +4,8 @@
  * Melissa Data service
  * 
  * @category   Aydus
- * @package	   Aydus_Addressvalidator
- * @author     Aydus Consulting <davidt@aydus.com>
+ * @package    Aydus_Addressvalidator
+ * @author     Aydus <davidt@aydus.com>
  */
 
 class Aydus_Addressvalidator_Model_Service_Melissadata extends Aydus_Addressvalidator_Model_Service_Abstract

@@ -2,8 +2,8 @@
  * Address Validator Billing/Shipping prototype overrides
  *
  * @category   Aydus
- * @package	   Aydus_Addressvalidator
- * @author     Aydus Consulting <davidt@aydus.com>
+ * @package    Aydus_Addressvalidator
+ * @author     Aydus <davidt@aydus.com>
  */
 
 //replace the nextStep method in the Billing prototype

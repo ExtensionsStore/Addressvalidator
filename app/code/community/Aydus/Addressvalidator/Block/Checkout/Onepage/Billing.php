@@ -4,8 +4,8 @@
  * Checkout Onepage billing override
  *
  * @category   Aydus
- * @package	   Aydus_Addressvalidator
- * @author     Aydus Consulting <davidt@aydus.com>
+ * @package    Aydus_Addressvalidator
+ * @author     Aydus <davidt@aydus.com>
  */
 
 class Aydus_Addressvalidator_Block_Checkout_Onepage_Billing extends Mage_Checkout_Block_Onepage_Billing

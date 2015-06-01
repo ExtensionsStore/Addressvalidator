@@ -5,7 +5,7 @@
  *
  * @category   Aydus
  * @package    Aydus_Addressvalidator
- * @author     Aydus Consulting <davidt@aydus.com>
+ * @author     Aydus <davidt@aydus.com>
  */
 class Aydus_Addressvalidator_Model_Service_Usps extends Aydus_Addressvalidator_Model_Service_Abstract {
 
@@ -80,7 +80,7 @@ class Aydus_Addressvalidator_Model_Service_Usps extends Aydus_Addressvalidator_M
         $results[] = array(
             'country_id' => 'US',
             'country' => 'US',
-            'street' => '58 Stone Hollow Drive',
+            'street' => array('58 Stone Hollow Drive'),
             'city' => 'Sicklerville',
             'region' => 'New Jersey',
             'region_id' => '41',

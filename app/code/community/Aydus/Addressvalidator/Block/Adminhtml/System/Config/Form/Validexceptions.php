@@ -4,8 +4,8 @@
  * Valid exceptions for countries
  * 
  * @category   Aydus
- * @package	   Aydus_Addressvalidator
- * @author     Aydus Consulting <davidt@aydus.com>
+ * @package    Aydus_Addressvalidator
+ * @author     Aydus <davidt@aydus.com>
  */
 class Aydus_Addressvalidator_Block_Adminhtml_System_Config_Form_Validexceptions extends Mage_Adminhtml_Block_System_Config_Form_Field_Array_Abstract
 {
