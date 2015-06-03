@@ -17,9 +17,9 @@
                         <children>
                             <config>
                                 <children>
-                                    <addressvalidator translate="title">
+                                    <aydus_addressvalidator translate="title">
                                         <title>Address Validator Settings</title>
-                                    </addressvalidator>
+                                    </aydus_addressvalidator>
                                 </children>
                             </config>
                         </children>

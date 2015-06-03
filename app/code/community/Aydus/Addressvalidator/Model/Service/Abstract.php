@@ -55,7 +55,7 @@ abstract class Aydus_Addressvalidator_Model_Service_Abstract extends Mage_Core_M
     protected $_country;
 
     public function _construct() {
-        $this->_numResults = Mage::getStoreConfig('addressvalidator/configuration/num_results', 0);
+        $this->_numResults = Mage::getStoreConfig('aydus_addressvalidator/configuration/num_results', 0);
         $resource = Mage::getSingleton('core/resource');
         $this->_read = $resource->getConnection('core_read');
         $this->_write = $resource->getConnection('core_write');

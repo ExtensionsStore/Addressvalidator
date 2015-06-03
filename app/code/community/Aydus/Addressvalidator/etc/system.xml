@@ -10,7 +10,7 @@
 -->
 <config>
     <sections>
-        <addressvalidator translate="label" module="addressvalidator">
+        <aydus_addressvalidator translate="label" module="addressvalidator">
             <label>Address Validator</label>
             <tab>sales</tab>
             <frontend_type>text</frontend_type>
@@ -94,6 +94,35 @@
                         </invalid_address>                         
                 	</fields>                 
                 </messaging>
+                <ups translate="label" module="addressvalidator">
+                    <label>UPS</label>
+                    <frontend_type>text</frontend_type>
+                    <sort_order>25</sort_order>
+		            <show_in_default>1</show_in_default>
+                    <fields>
+                        <gateway_url translate="label">
+                            <label>Gateway URL</label>
+                            <frontend_type>text</frontend_type>
+                            <sort_order>5</sort_order>
+		            		<show_in_default>1</show_in_default>
+                            <comment><![CDATA[Web Tools API Gateway Url.]]></comment>
+                        </gateway_url>                     
+                        <account_number translate="label">
+                            <label>Account Number</label>
+                            <frontend_type>text</frontend_type>
+                            <sort_order>10</sort_order>
+		            		<show_in_default>1</show_in_default>
+                            <comment><![CDATA[Web Tools API Account Number.]]></comment>
+                        </account_number> 
+                        <account_password translate="label">
+                            <label>Account Password</label>
+                            <frontend_type>text</frontend_type>
+                            <sort_order>15</sort_order>
+		            		<show_in_default>1</show_in_default>
+                            <comment><![CDATA[Web Tools API Account Password.]]></comment>
+                        </account_password>                         
+                    </fields>                     
+                </ups>                      
                 <usps translate="label" module="addressvalidator">
                     <label>USPS</label>
                     <frontend_type>text</frontend_type>
@@ -186,7 +215,7 @@
                     </fields>                     
                 </melissadata>
             </groups>
-        </addressvalidator>
+        </aydus_addressvalidator>
     </sections>
 </config>
 

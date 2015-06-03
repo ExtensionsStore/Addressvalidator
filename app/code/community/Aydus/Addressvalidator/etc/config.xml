@@ -11,7 +11,7 @@
 <config>
     <modules>
         <Aydus_Addressvalidator>
-            <version>1.0.0</version>
+            <version>1.1.0</version>
         </Aydus_Addressvalidator>
     </modules>
     <frontend>
@@ -19,7 +19,7 @@
             <controller_action_postdispatch_checkout_onepage_saveBilling>
                 <observers>
                     <addressvalidator_checkaddress>
-                            <class>addressvalidator/observer</class>
+                            <class>aydus_addressvalidator/observer</class>
                             <method>validateAddress</method>
                         </addressvalidator_checkaddress>
                 </observers>
@@ -27,7 +27,7 @@
             <controller_action_postdispatch_checkout_onepage_saveShipping>
                 <observers>
                     <addressvalidator_checkaddress>
-                            <class>addressvalidator/observer</class>
+                            <class>aydus_addressvalidator/observer</class>
                             <method>validateAddress</method>
                         </addressvalidator_checkaddress>
                 </observers>
@@ -35,17 +35,17 @@
         </events>     
         <layout>
             <updates>
-                <addressvalidator>
+                <aydus_addressvalidator>
                     <file>aydus/addressvalidator.xml</file>
-                </addressvalidator>
+                </aydus_addressvalidator>
             </updates>
         </layout>		   
     </frontend>        
     <global>
         <blocks>
-            <addressvalidator>
+            <aydus_addressvalidator>
                 <class>Aydus_Addressvalidator_Block</class>
-            </addressvalidator>
+            </aydus_addressvalidator>
             <!-- 
             <checkout>
                 <rewrite>
@@ -54,14 +54,17 @@
             </checkout> -->
         </blocks>
         <models>
-            <addressvalidator>
+            <aydus_addressvalidator>
                 <class>Aydus_Addressvalidator_Model</class>
-            </addressvalidator>
+            </aydus_addressvalidator>
         </models>
         <helpers>
+            <aydus_addressvalidator>
+                <class>Aydus_Addressvalidator_Helper</class>
+            </aydus_addressvalidator>
             <addressvalidator>
                 <class>Aydus_Addressvalidator_Helper</class>
-            </addressvalidator>
+            </addressvalidator>            
         </helpers>
         <resources>
             <aydus_addressvalidator_setup>
@@ -75,7 +78,7 @@
         </resources>            
     </global>
     <default>
-        <addressvalidator>
+        <aydus_addressvalidator>
             <configuration>
                 <service>usps</service>
                 <num_results>5</num_results>
@@ -92,6 +95,6 @@
             <addressdoctor>
                 <valid_exceptions><![CDATA[a:4:{i:0;a:14:{s:12:"country_name";s:6:"Jordan";s:9:"iso3_code";s:3:"JOR";s:2:"V4";i:1;s:2:"V3";i:1;s:2:"V2";i:1;s:2:"V1";i:0;s:2:"C4";i:1;s:2:"C3";i:1;s:2:"C2";i:1;s:2:"C1";i:0;s:2:"I4";i:1;s:2:"I3";i:1;s:2:"I2";i:0;s:2:"I1";i:0;}i:1;a:14:{s:12:"country_name";s:11:"New Zealand";s:9:"iso3_code";s:3:"NZL";s:2:"V4";i:1;s:2:"V3";i:1;s:2:"V2";i:1;s:2:"V1";i:0;s:2:"C4";i:1;s:2:"C3";i:1;s:2:"C2";i:0;s:2:"C1";i:0;s:2:"I4";i:1;s:2:"I3";i:1;s:2:"I2";i:0;s:2:"I1";i:0;}i:2;a:14:{s:12:"country_name";s:12:"Saudi Arabia";s:9:"iso3_code";s:3:"SAU";s:2:"V4";i:1;s:2:"V3";i:1;s:2:"V2";i:1;s:2:"V1";i:0;s:2:"C4";i:1;s:2:"C3";i:1;s:2:"C2";i:1;s:2:"C1";i:0;s:2:"I4";i:1;s:2:"I3";i:1;s:2:"I2";i:0;s:2:"I1";i:0;}i:3;a:14:{s:12:"country_name";s:20:"United Arab Emirates";s:9:"iso3_code";s:3:"ARE";s:2:"V4";i:1;s:2:"V3";i:1;s:2:"V2";i:1;s:2:"V1";i:0;s:2:"C4";i:1;s:2:"C3";i:1;s:2:"C2";i:1;s:2:"C1";i:0;s:2:"I4";i:1;s:2:"I3";i:1;s:2:"I2";i:0;s:2:"I1";i:0;}}]]></valid_exceptions>
             </addressdoctor>
-        </addressvalidator>
+        </aydus_addressvalidator>
     </default>	     
 </config>

@@ -37,7 +37,7 @@ class Aydus_Addressvalidator_Model_Service_Melissadata extends Aydus_Addressvali
 	 */
 	protected function _getMessage($customerAddress)
 	{
-		$customerId = Mage::getStoreConfig('addressvalidator/melissadata/customer_id');
+		$customerId = Mage::getStoreConfig('aydus_addressvalidator/melissadata/customer_id');
 				
 		$extractableArray = $this->_getExtractableAddressArray($customerAddress);
 		extract($extractableArray);

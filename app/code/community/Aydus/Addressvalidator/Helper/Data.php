@@ -23,7 +23,7 @@ class Aydus_Addressvalidator_Helper_Data extends Mage_Core_Helper_Abstract {
      * Popup messaging nodes
      */
     public function __construct() {
-        $messagingNodes = Mage::getConfig()->getNode('default/addressvalidator/messaging');
+        $messagingNodes = Mage::getConfig()->getNode('default/aydus_addressvalidator/messaging');
         $this->_messaging = json_decode(json_encode((array) $messagingNodes), true);
     }
 
@@ -46,7 +46,7 @@ class Aydus_Addressvalidator_Helper_Data extends Mage_Core_Helper_Abstract {
      * @return boolean
      */
     public function tooManyAttempts() {
-        $numAttempts = (int) Mage::getStoreConfig('addressvalidator/configuration/num_attempts');
+        $numAttempts = (int) Mage::getStoreConfig('aydus_addressvalidator/configuration/num_attempts');
         $numAttempts = ($numAttempts >= self::MIN_ATTEMPTS && $numAttempts <= self::MAX_ATTEMPTS) ? $numAttempts : self::DEFAULT_ATTEMPTS;
         $numAttempts = ($this->isDebug()) ? 200 : $numAttempts;
 
@@ -65,7 +65,7 @@ class Aydus_Addressvalidator_Helper_Data extends Mage_Core_Helper_Abstract {
     public function getMessaging($messageKey) {
         if (in_array($messageKey, array_keys($this->_messaging))) {
 
-            $message = Mage::getStoreConfig("addressvalidator/messaging/$messageKey");
+            $message = Mage::getStoreConfig("aydus_addressvalidator/messaging/$messageKey");
             return $message;
         }
 
@@ -81,7 +81,7 @@ class Aydus_Addressvalidator_Helper_Data extends Mage_Core_Helper_Abstract {
     public function validateStore($store) {
         $storeId = $store->getId();
 
-        $validateStore = Mage::getStoreConfig('addressvalidator/configuration/enabled', $storeId);
+        $validateStore = Mage::getStoreConfig('aydus_addressvalidator/configuration/enabled', $storeId);
 
         return $validateStore;
     }
@@ -93,8 +93,8 @@ class Aydus_Addressvalidator_Helper_Data extends Mage_Core_Helper_Abstract {
      * @return Aydus_Addressvalidator_Model_Service_Abstract
      */
     public function getService($storeId) {
-        $configService = Mage::getStoreConfig('addressvalidator/configuration/service', $storeId);
-        $alias = 'addressvalidator/service_' . $configService;
+        $configService = Mage::getStoreConfig('aydus_addressvalidator/configuration/service', $storeId);
+        $alias = 'aydus_addressvalidator/service_' . $configService;
         $serviceModel = Mage::getModel($alias);
 
         return $serviceModel;

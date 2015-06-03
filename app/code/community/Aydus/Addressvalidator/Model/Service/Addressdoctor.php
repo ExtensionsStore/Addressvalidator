@@ -37,7 +37,7 @@ class Aydus_Addressvalidator_Model_Service_Addressdoctor extends Aydus_Addressva
 		
 		if (!is_array($validStatuses) || count($validStatuses)==0){
 			
-			$validExceptions = Mage::getStoreConfig('addressvalidator/addressdoctor/valid_exceptions');
+			$validExceptions = Mage::getStoreConfig('aydus_addressvalidator/addressdoctor/valid_exceptions');
 			
 			if ($validExceptions){
 				
@@ -84,9 +84,9 @@ class Aydus_Addressvalidator_Model_Service_Addressdoctor extends Aydus_Addressva
 	 */
 	protected function _getMessage($customerAddress)
 	{
-		$customerId = Mage::getStoreConfig('addressvalidator/addressdoctor/customer_id');
-		$password = Mage::getStoreConfig('addressvalidator/addressdoctor/password');
-		$testMode = (int)Mage::getStoreConfig('addressvalidator/addressdoctor/test_mode');
+		$customerId = Mage::getStoreConfig('aydus_addressvalidator/addressdoctor/customer_id');
+		$password = Mage::getStoreConfig('aydus_addressvalidator/addressdoctor/password');
+		$testMode = (int)Mage::getStoreConfig('aydus_addressvalidator/addressdoctor/test_mode');
 		$test = ($testMode) ? 'TEST' : '';
 		
 		$extractableArray = $this->_getExtractableAddressArray($customerAddress);
@@ -299,7 +299,7 @@ class Aydus_Addressvalidator_Model_Service_Addressdoctor extends Aydus_Addressva
 	protected function _processStatus($processStatus)
 	{
 		$return = 0;
-		$validCodes = Mage::getStoreConfig('addressvalidator/addressdoctor/valid_codes');
+		$validCodes = Mage::getStoreConfig('aydus_addressvalidator/addressdoctor/valid_codes');
 		if ($validCodes){
 			
 			$validCodes = explode(',',$validCodes);
