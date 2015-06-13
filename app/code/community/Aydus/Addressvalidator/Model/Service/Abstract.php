@@ -170,7 +170,7 @@ abstract class Aydus_Addressvalidator_Model_Service_Abstract extends Mage_Core_M
 
             curl_setopt($ch, CURLOPT_URL, $this->_url);
             $headers = array(
-                'Content-Type: text/xml; charset=utf-8',
+                'Content-Type: application/xml; charset=utf-8',
                 'Content-Length: ' . strlen($message),
             );
             if (is_array($this->_headers) && count($this->_headers) > 0) {

@@ -7,42 +7,47 @@
  * @author     Aydus <davidt@aydus.com>
  */
 ?>
-<script type="text/javascript" src="<?php echo $this->getSkinUrl('js/aydus/addressvalidator/address.js')?>"></script>
 <div id="location-selector-wrapper" style="display: none">
-	<div id="location-selector-overlay"></div>
-	<div id="location-selector">
-	
-		<div id="addressvalidator-popup" class="group-select">
-		
-			<form>
-				<input type="hidden" id="address-form" name="address_form" value="" />
-				<h4></h4>
-				
-				<ul class='radios'>
-				</ul>
-				
-			    <div class="button-set buttons actions">
-			        <button class="button back">
-			            <span><span><?php echo $this->__('Back') ?></span></span>
-			        </button>
-			    
-			        <button class="button select disabled">
-			            <span><span><?php echo $this->__('Select') ?></span></span>
-			        </button>
-			        
-			        <button class="button skip">
-			            <span><span><?php echo $this->__('Skip') ?></span></span>
-			        </button>
+    <div id="location-selector-overlay"></div>
+    <div id="location-selector">
 
-			        <button class="button okay" href="<?php echo $this->getUrl('customer-service') ?>">
-			            <span><span><?php echo $this->__('Customer Service') ?></span></span>
-			        </button>
-			        
-			    </div>				
-			</form>
-			
-		</div>
-		
-	</div>
+        <div id="addressvalidator-popup" class="group-select">
+
+            <form>
+                <input type="hidden" id="address-form" name="address_form" value="" />
+                <h4></h4>
+
+                <ul class='radios'>
+                </ul>
+
+                <div class="button-set buttons actions">
+                    <button class="button back">
+                        <span><span><?php echo $this->__('Back') ?></span></span>
+                    </button>
+
+                    <button class="button select disabled">
+                        <span><span><?php echo $this->__('Select') ?></span></span>
+                    </button>
+
+                    <button class="button skip">
+                        <span><span><?php echo $this->__('Skip') ?></span></span>
+                    </button>
+
+                    <button class="button okay" href="<?php echo $this->getUrl('customer-service') ?>">
+                        <span><span><?php echo $this->__('Customer Service') ?></span></span>
+                    </button>
+
+                </div>				
+            </form>
+
+        </div>
+
+    </div>
 </div>
 
+<script src="<?php echo $this->getSkinUrl('js/aydus/addressvalidator/address.js') ?>"></script>
+<script>
+    addressValidator.init({
+        auto_populate: <?php echo (Mage::getStoreConfig('aydus_addressvalidator/configuration/auto_populate')) ? 'true' : 'false' ?>
+    });
+</script>
