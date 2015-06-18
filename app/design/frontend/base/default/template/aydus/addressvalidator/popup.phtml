@@ -7,43 +7,41 @@
  * @author     Aydus <davidt@aydus.com>
  */
 ?>
-<div id="location-selector-wrapper" style="display: none">
-    <div id="location-selector-overlay"></div>
-    <div id="location-selector">
 
-        <div id="addressvalidator-popup" class="group-select">
 
-            <form>
-                <input type="hidden" id="address-form" name="address_form" value="" />
-                <h4></h4>
+<div id="av-popup" style="display: none">
+    <div id="av-popup-overlay"></div>
+    <div id="av-popup-content">
+        <form>
+            <input type="hidden" id="address-form" name="address_form" value="" />
+            <h4></h4>
 
-                <ul class='radios'>
-                </ul>
+            <ul class='radios'>
+            </ul>
 
-                <div class="button-set buttons actions">
-                    <button class="button back">
-                        <span><span><?php echo $this->__('Back') ?></span></span>
-                    </button>
+            <div class="button-set buttons actions">
+                <button class="button back">
+                    <span><span><?php echo $this->__('Back') ?></span></span>
+                </button>
 
-                    <button class="button select disabled">
-                        <span><span><?php echo $this->__('Select') ?></span></span>
-                    </button>
+                <button class="button select disabled">
+                    <span><span><?php echo $this->__('Select') ?></span></span>
+                </button>
 
-                    <button class="button skip">
-                        <span><span><?php echo $this->__('Skip') ?></span></span>
-                    </button>
+                <button class="button skip">
+                    <span><span><?php echo $this->__('Skip') ?></span></span>
+                </button>
 
-                    <button class="button okay" href="<?php echo $this->getUrl('customer-service') ?>">
-                        <span><span><?php echo $this->__('Customer Service') ?></span></span>
-                    </button>
+                <button class="button okay" href="<?php echo $this->getUrl('customer-service') ?>">
+                    <span><span><?php echo $this->__('Customer Service') ?></span></span>
+                </button>
 
-                </div>				
-            </form>
-
-        </div>
-
+            </div>				
+        </form>        
     </div>
 </div>
+
+
 
 <script src="<?php echo $this->getSkinUrl('js/aydus/addressvalidator/address.js') ?>"></script>
 <script>

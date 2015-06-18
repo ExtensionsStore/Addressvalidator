@@ -89,11 +89,11 @@ function AddressValidator($)
 
                 //enable selection
                 $('.radio').click(function (e) {
-                    $('#addressvalidator-popup .select').removeClass('disabled');
+                    $('#av-popup .select').removeClass('disabled');
                 });
 
                 //show popup
-                $('#location-selector-wrapper').show();                
+                $('#av-popup').show();                
             }
 
         }
@@ -115,7 +115,7 @@ function AddressValidator($)
         //hide the select button (nothing to select) and skip button (per JM)
         $popup.find('.select, .skip, .okay').hide();
         //show popup
-        $('#location-selector-wrapper').show();
+        $('#av-popup').show();
     };
 
     /**
@@ -131,7 +131,7 @@ function AddressValidator($)
         $popup.find('.back, .select, .skip').hide();
         $popup.find('.okay').attr('href', url).show();
         //show popup
-        $('#location-selector-wrapper').show();
+        $('#av-popup').show();
     };
 
 
@@ -140,7 +140,7 @@ function AddressValidator($)
      */
     var getPopup = function ()
     {
-        var $popup = $('#addressvalidator-popup');
+        var $popup = $('#av-popup');
         //empty out previous results
         var $radios = $popup.find('ul.radios');
         $radios.empty();
@@ -221,7 +221,7 @@ function AddressValidator($)
                 });
 
                 //close the popup and stay on the current step
-                $('#addressvalidator-popup .back').click(function (e) {
+                $('#av-popup .back').click(function (e) {
 
                     var form = $('#address-form').val();
                     e.preventDefault();
@@ -234,12 +234,12 @@ function AddressValidator($)
 
 
                 //handle address selection
-                $('#addressvalidator-popup .select').click(function (e) {
+                $('#av-popup .select').click(function (e) {
 
                     e.preventDefault();
                     e.stopPropagation();
 
-                    var $checkedRadio = $('#addressvalidator-popup .radio:checked');
+                    var $checkedRadio = $('#av-popup .radio:checked');
                     var checked = ($checkedRadio.length > 0) ? true : false;
 
                     if (checked) {
@@ -259,7 +259,7 @@ function AddressValidator($)
                                 populate(formType, address);
                             }
 
-                            $('#location-selector-wrapper').hide();
+                            $('#av-popup').hide();
 
                             gotoNextStep();
 
@@ -269,18 +269,18 @@ function AddressValidator($)
                 });
 
                 //skip address validation and continue
-                $('#addressvalidator-popup .skip').click(function (e) {
+                $('#av-popup .skip').click(function (e) {
 
                     e.preventDefault();
                     e.stopPropagation();
 
                     gotoNextStep();
 
-                    $('#location-selector-wrapper').hide();
+                    $('#av-popup').hide();
                 });
 
                 //too many attempts redirect button
-                $('#addressvalidator-popup .okay').click(function (e) {
+                $('#av-popup .okay').click(function (e) {
 
                     e.preventDefault();
                     e.stopPropagation();

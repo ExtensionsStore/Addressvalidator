@@ -5,42 +5,8 @@
  * @package    Aydus_Addressvalidator
  * @author     Aydus <davidt@aydus.com>
  */
- 
-#location-selector{
-    position: absolute;
-    top: 50%;
-    left: 50%;
-    z-index: 9999;
-    width: 500px;
-    margin: -220px 0 0 -250px;
-}
-#location-selector[id]{ /* IE6 and below Can't See This */
-    position: fixed;
-}
-#location-selector a {
-	color: blue;
-}
-#location-selector .group-select 
-{ 
-    margin: 0; 
-    background-color: #fff;
-    padding: 30px;
-    border: 3px solid #002856;
-    border-radius:16px;
-    -webkit-border-radius:16px;
-    -moz-border-radius:15px;
-    -khtml-border-radius:20px;
-    -moz-box-shadow: 0 0 10px rgba(0,0,0,0.5); /* Firefox */
-    -webkit-box-shadow: 0 0 10px rgba(0,0,0,0.5); /* Safari & Chrome */
-    box-shadow: 0 0 20px rgba(255,255,255,0.8); /* Shadow Params */
-}
-#location-selector .buttons {
-    margin-top: 20px;
-}
-#location-selector .list li {
-    margin-top: 10px;
-}
-#location-selector-overlay{
+
+#av-popup-overlay{
     position: absolute;
     top: 0;
     left: 0;
@@ -52,91 +18,76 @@
     opacity:.50;
     filter: alpha(opacity=50);
 }
-#location-selector-overlay[id]{ /* IE6 and below Can't See This */
+#av-popup-overlay[id]{ /* IE6 and below Can't See This */
     position: fixed;
 }
-.shipping-location {
-    color: #A7A9AB;
-}
-.shipping-location a, .shipping-location a:hover { color: #ebbc58; }
 
-.button .span {
-    background: none repeat scroll 0 0 #618499;
-    border-color: #406A83;
+#av-popup-content{
+    position: absolute;
+    top: 50%;
+    left: 50%;
+    z-index: 9999;
+    width: 500px;
+    margin: -220px 0 0 -250px;
+    background-color: #fff;
+    padding: 30px;
+    border: 3px solid #002856;
+    border-radius:16px;
+    -webkit-border-radius:16px;
+    -moz-border-radius:15px;
+    -khtml-border-radius:20px;
+    -moz-box-shadow: 0 0 10px rgba(0,0,0,0.5); /* Firefox */
+    -webkit-box-shadow: 0 0 10px rgba(0,0,0,0.5); /* Safari & Chrome */
+    box-shadow: 0 0 20px rgba(255,255,255,0.8); /* Shadow Params */    
 }
-#location-selector select {
-    width: 200px;
-}
-.freeshipping {
-    font-weight: bold;
-    color: #0a0;
-    margin: 6px 5px;
-}
-.products-grid .freeshipping {
-    float: left;
-    margin: 5px !important;
-}
-
-.product-details .freeshipping {
-    float: none;
-    margin: 0;
-}
-.product-view .freeshipping {
-    float: left;
-    margin: 10px 20px;
-}
-.clear_freeshipping {
-    /*display: none;*/
-}
-.product-view .clear_freeshipping {
-    clear: both;
-}
-.product-details .checkout {
-    margin: 6px 5px;
-    float: left;
+#av-popup-content[id]{ /* IE6 and below Can't See This */
+    position: fixed;
 }
 
-.cart-table .item-msg {
-	font-size: 14px;
-	font-weight: bold;
+#av-popup-content a {
+    color: blue;
 }
 
-.cart-table .notice {
-	color: red;
+#av-popup-content .buttons {
+    margin-top: 20px;
 }
+#av-popup-content .list li {
+    margin-top: 10px;
+}
+
 
 @media only screen and (max-width: 520px){
 
-	#location-selector{
-	    width: 350px;
-	    top: 80px;
-		left: 80px;
-		margin: 0;
-	}
-	button.button span span {
-		padding: 0 12px;
-	}
+    #av-popup-content{
+        width: 350px;
+        top: 80px;
+        left: 80px;
+        margin: 0;
+    }
+    #av-popup-content button.button span span {
+        padding: 0 12px;
+    }
 }
 
 @media only screen and (max-width: 450px){
-	#location-selector{
-	    top: 50px;
-		left: 50px;
-	}
+    #av-popup-content{
+        top: 50px;
+        left: 50px;
+    }
 }
 
 @media only screen and (max-width: 400px){
-	#location-selector{
-	    width: 320px;
-	    top: 40px;
-		left: 40px;
-	}
+    #av-popup-content{
+        width: 320px;
+        top: 40px;
+        left: 40px;
+    }
 }
 
 @media only screen and (max-width: 350px){
-	#location-selector{
-	    width: 300px;
-	    top: 10px;
-		left: 10px;
-	}
+    #av-popup-content{
+        width: 300px;
+        top: 10px;
+        left: 10px;
+    }
 }
