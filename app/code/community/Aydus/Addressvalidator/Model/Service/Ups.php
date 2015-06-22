@@ -31,9 +31,10 @@ class Aydus_Addressvalidator_Model_Service_Ups extends Aydus_Addressvalidator_Mo
      */
     protected function _getMessage($customerAddress) {
         
-        $accessLicenseNumber = Mage::getStoreConfig('aydus_addressvalidator/ups/access_license_number');
-        $userId = Mage::getStoreConfig('aydus_addressvalidator/ups/user_id');
-        $password = Mage::helper('core')->decrypt(Mage::getStoreConfig('aydus_addressvalidator/ups/password'));
+        $storeId = Mage::app()->getStore()->getId();
+        $accessLicenseNumber = Mage::getStoreConfig('aydus_addressvalidator/ups/access_license_number',$storeId);
+        $userId = Mage::getStoreConfig('aydus_addressvalidator/ups/user_id',$storeId);
+        $password = Mage::helper('core')->decrypt(Mage::getStoreConfig('aydus_addressvalidator/ups/password',$storeId));
 
         $extractableArray = $this->_getExtractableAddressArray($customerAddress);
         extract($extractableArray);
@@ -93,8 +94,17 @@ class Aydus_Addressvalidator_Model_Service_Ups extends Aydus_Addressvalidator_Mo
             $return['data'] = (!is_array($responseJson->AddressKeyFormat)) ? array($responseJson->AddressKeyFormat) : $responseJson->AddressKeyFormat;
 
         } else {
+            
+            $error = @$responseJson->Response->Error;
+            $message = 'An error occurred during service call to UPS.';
+            
+            if ($error && $error->ErrorCode && $error->ErrorDescription){
+                $message = $error->ErrorCode.'-'.$error->ErrorDescription;
+            }
 
-            Mage::log($statusCode . '-' . $statusMessage, null, 'addressvalidator.log');
+            Mage::log($message, null, 'addressvalidator.log');
+            $return['error'] = false;
+            $return['data'] = $message;
         }
 
         return $return;

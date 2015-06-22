@@ -46,6 +46,7 @@
 <script src="<?php echo $this->getSkinUrl('js/aydus/addressvalidator/address.js') ?>"></script>
 <script>
     addressValidator.init({
-        auto_populate: <?php echo (Mage::getStoreConfig('aydus_addressvalidator/configuration/auto_populate')) ? 'true' : 'false' ?>
+        auto_populate: <?php echo (Mage::getStoreConfig('aydus_addressvalidator/configuration/auto_populate')) ? 'true' : 'false' ?>,
+        allow_bypass: <?php echo (Mage::getStoreConfig('aydus_addressvalidator/configuration/allow_bypass')) ? 'true' : 'false' ?>
     });
 </script>

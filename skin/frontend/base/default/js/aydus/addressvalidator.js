@@ -43,7 +43,7 @@ function AddressValidator($)
         //create list of addresses and show popup
         if (results && results.length > 0) {
             
-            if (config.auto_populate && results.length == 1){
+            if (config.auto_populate){
                     
                 var formType = getFormType();
                 var address = results[0];
@@ -107,15 +107,23 @@ function AddressValidator($)
     {
         //set the popup scope for any js that needs it
         $('#address-form').val(form);
+    	
+    	if (config.allow_bypass === true){
+    		
+            $('#' + form).append('<input type="hidden" class="address-validated" name="address_validated" value="1" />');
+    		gotoNextStep();
 
-        //get the popup
-        $popup = getPopup();
-        //append message
-        $popup.find('h4').html(message);
-        //hide the select button (nothing to select) and skip button (per JM)
-        $popup.find('.select, .skip, .okay').hide();
-        //show popup
-        $('#av-popup').show();
+    	} else {
+    		
+            //get the popup
+            $popup = getPopup();
+            //append message
+            $popup.find('h4').html(message);
+            //hide the select button (nothing to select) and skip button (per JM)
+            $popup.find('.select, .skip, .okay').hide();
+            //show popup
+            $('#av-popup').show();
+    	}
     };
 
     /**
@@ -228,7 +236,7 @@ function AddressValidator($)
                     e.stopPropagation();
                     //allow validation
                     $('#' + form).find('.address-validated').val(0);
-                    $('#location-selector-wrapper').hide();
+                    $('#av-popup').hide();
 
                 });
 
