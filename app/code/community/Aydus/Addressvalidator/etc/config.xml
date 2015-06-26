@@ -11,7 +11,7 @@
 <config>
     <modules>
         <Aydus_Addressvalidator>
-            <version>1.1.0</version>
+            <version>1.2.0</version>
         </Aydus_Addressvalidator>
     </modules>
     <frontend>
@@ -83,6 +83,7 @@
                 <service>usps</service>
                 <num_results>5</num_results>
                 <num_attempts>3</num_attempts>
+                <too_many_attempts_url>contact-us</too_many_attempts_url>
             </configuration>
             <messaging>
                 <too_many_attempts>We're sorry, but we are unable to verify your address after several attempts. Please contact Customer Service.</too_many_attempts>

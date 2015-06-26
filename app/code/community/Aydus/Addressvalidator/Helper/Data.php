@@ -90,10 +90,14 @@ class Aydus_Addressvalidator_Helper_Data extends Mage_Core_Helper_Abstract {
      * Get service from store config
      * 
      * @param int $storeId
+     * @param bool $international
      * @return Aydus_Addressvalidator_Model_Service_Abstract
      */
-    public function getService($storeId) {
-        $configService = Mage::getStoreConfig('aydus_addressvalidator/configuration/service', $storeId);
+    public function getService($storeId, $international=false) {
+        
+        $service = ($international) ? 'service_international' : 'service';
+        $configService = Mage::getStoreConfig('aydus_addressvalidator/configuration/'.$service, $storeId);
+        $configService = ($configService) ? $configService : 'usps'; 
         $alias = 'aydus_addressvalidator/service_' . $configService;
         $serviceModel = Mage::getModel($alias);
 

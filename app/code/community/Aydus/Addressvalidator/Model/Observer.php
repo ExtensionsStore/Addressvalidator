@@ -36,7 +36,8 @@ class Aydus_Addressvalidator_Model_Observer extends Mage_Core_Model_Abstract {
             $result = array();
             $result['validate'] = true;
             $result['error'] = true;
-            $result['data'] = Mage::getUrl('customer-service');
+            $tooManyAttemptsUrl = Mage::getStoreConfig('aydus_addressvalidator/configuration/too_many_attempts_url',$storeId);
+            $result['data'] = Mage::getUrl($tooManyAttemptsUrl);
             $result['message'] = $helper->getMessaging('too_many_attempts');
 
             $response->setBody(Mage::helper('core')->jsonEncode($result));
@@ -58,7 +59,8 @@ class Aydus_Addressvalidator_Model_Observer extends Mage_Core_Model_Abstract {
                 $address = $quote->getShippingAddress();
             }
 
-            $service = $helper->getService($storeId);
+            $international = (Mage::getStoreConfig('general/country/default') != $address->getCountryId()) ? true : false;
+            $service = $helper->getService($storeId, $international);
             $returned = array('error' => true);
 
             try {
