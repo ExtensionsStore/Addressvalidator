@@ -66,11 +66,19 @@ class Aydus_Addressvalidator_Model_Observer extends Mage_Core_Model_Abstract {
             try {
                 $returned = $service->getResults($address);
             } catch (Exception $e) {
-                Mage::log($e->getMessage(), null, 'addressvalidator.log');
+                Mage::log($e->getMessage(), null, 'aydus_addressvalidator.log');
             }
 
             if (!$returned['error']) {
-
+                
+                $autoPopulate = (int)Mage::getStoreConfig('aydus_addressvalidator/configuration/auto_populate');
+                
+                if ($autoPopulate && is_array($returned['data']) && count($returned['data']) > 0){
+                    if ($helper->setAddressData($address, $returned['data'][0])){
+                        return $this;
+                    }
+                }
+                
                 $responseCode = ($helper->isDebug() && isset($returned['response_code']) && $returned['response_code']) ? ' (' . $returned['response_code'] . ')' : '';
                 $result = array();
                 $result['validate'] = true;

@@ -121,8 +121,11 @@ class Aydus_Addressvalidator_Helper_Data extends Mage_Core_Helper_Abstract {
         $street2 = (isset($street[1])) ? $street[1] : '';
         $city = $customerAddress->getCity();
         $region = $customerAddress->getRegion();
-        $postcode = $customerAddress->getPostcode();
         $countryId = $customerAddress->getCountryId();
+        $postcode = $customerAddress->getPostcode();
+        if ($countryId == 'US' && strlen($postcode)<5) {
+            $postcode = str_pad($postcode, 5, '0');
+        }
         $telephone = $customerAddress->getTelephone();
 
         $extractableArray = array(
@@ -160,6 +163,87 @@ class Aydus_Addressvalidator_Helper_Data extends Mage_Core_Helper_Abstract {
         $xmlObject = json_decode($xmlJsonStr);
 
         return $xmlObject;
+    }
+    
+    /**
+     * Auto populate data
+     * 
+     * @param Mage_Customer_Model_Address $address
+     * @param array $data
+     * @return bool 
+     */
+    public function setAddressData($address, $data)
+    {
+        try {
+            
+            $request = Mage::app()->getRequest();
+            
+            if ($address->getAddressType()=='billing'){
+            
+                $postData = $request->getParam('billing');
+            
+            } else {
+            
+                $postData = $request->getParam('shipping');
+            }
+            
+            $regionId = (int)@$postData['region_id'];
+            
+            if ($regionId && $regionId != @$data['region_id']){
+                
+                Mage::log('Posted region is not the same as validated region.', null, 'aydus_addressvalidator.log');
+                Mage::log($postData,null,'aydus_addressvalidator.log');
+                Mage::log($data,null,'aydus_addressvalidator.log');
+                return false;
+            }
+                        
+            if (isset($data['street']) && is_array($data['street']) && count($data['street']) > 0){
+                $street = (count($data['street']) > 1) ? implode("\n",$data['street']) : $data['street'][0];
+                $data['street'] = $street;
+            }
+            
+            $address->addData($data);
+            $address->save();
+            
+            $customerAddressId = (int)$address->getCustomerAddressId();
+            
+            if ($customerAddressId){
+                                
+                $customerAddress = Mage::getModel('customer/address')->load($customerAddressId);
+                $customerAddress->addData($data);
+                $customerAddress->save();                
+            }
+            
+            if ($address->getAddressType() == 'billing'){
+                                
+                if (@$postData['use_for_shipping']){
+                    
+                    $quote = Mage::getSingleton('checkout/session')->getQuote();
+                    $shippingAddress = $quote->getShippingAddress();
+                    
+                    $shippingAddress->setSameAsBilling(true);
+                    $shippingAddress->addData($data);
+                    $shippingAddress->save();  
+
+                    $customerShippingAddressId = (int)$shippingAddress->getCustomerAddressId();
+                    
+                    if ($customerShippingAddressId){
+                    
+                        $customerShippingAddress = Mage::getModel('customer/address')->load($customerAddressId);
+                        $customerShippingAddress->addData($data);
+                        $customerShippingAddress->save();
+                    }                    
+                    
+                }
+                
+            }
+            
+        } catch(Exception $e){
+            Mage::log($e->getMessage(),null, 'aydus_addressvalidator.log');
+        }
+        
+        return true;
+        
     }
 
 }

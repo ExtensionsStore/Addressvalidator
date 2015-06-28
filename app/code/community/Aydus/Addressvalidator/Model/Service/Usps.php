@@ -90,7 +90,7 @@ class Aydus_Addressvalidator_Model_Service_Usps extends Aydus_Addressvalidator_M
 
         } else {
 
-            Mage::log($address->Error->Number . '-' . $address->Error->Description, null, 'addressvalidator.log');
+            Mage::log($address->Error->Number . '-' . $address->Error->Description, null, 'aydus_addressvalidator.log');
             $return['error'] = false;
             $return['data'] = $address->Error->Description;
         }
@@ -152,7 +152,7 @@ class Aydus_Addressvalidator_Model_Service_Usps extends Aydus_Addressvalidator_M
                     'postcode' => $postcode,
                 );
             } catch (Exception $e) {
-                Mage::log($e->getMessage(), null, 'addressvalidator.log');
+                Mage::log($e->getMessage(), null, 'aydus_addressvalidator.log');
             }
         }
 

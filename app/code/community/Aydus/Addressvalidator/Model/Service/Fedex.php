@@ -109,7 +109,7 @@ class Aydus_Addressvalidator_Model_Service_Fedex extends Aydus_Addressvalidator_
 
         } else {
 
-            Mage::log($statusCode . '-' . $statusMessage, null, 'addressvalidator.log');
+            Mage::log($statusCode . '-' . $statusMessage, null, 'aydus_addressvalidator.log');
         }
 
         return $return;
@@ -153,7 +153,7 @@ class Aydus_Addressvalidator_Model_Service_Fedex extends Aydus_Addressvalidator_
                     'postcode' => $postcode,
                 );
             } catch (Exception $e) {
-                Mage::log($e->getMessage(), null, 'addressvalidator.log');
+                Mage::log($e->getMessage(), null, 'aydus_addressvalidator.log');
             }
         }
 

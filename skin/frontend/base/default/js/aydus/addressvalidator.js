@@ -43,58 +43,47 @@ function AddressValidator($)
         //create list of addresses and show popup
         if (results && results.length > 0) {
             
-            if (config.auto_populate){
-                    
-                var formType = getFormType();
-                var address = results[0];
+            //create list of address radio buttons
+            var radios = '';
+            $popup = getPopup();
+            $popup.find('h4').html(message);
+            //show buttons we hid in editAddress
+            $popup.find('.select').show();
+            //hide skip button per JM
+            $popup.find('.skip, .okay').hide();
+            var $radios = $popup.find('ul.radios');
+            $radios.empty();
 
-                populate(formType, address);
-                gotoNextStep();
-                
-            } else {
-                
-                //create list of address radio buttons
-                var radios = '';
-                $popup = getPopup();
-                $popup.find('h4').html(message);
-                //show buttons we hid in editAddress
-                $popup.find('.select').show();
-                //hide skip button per JM
-                $popup.find('.skip, .okay').hide();
-                var $radios = $popup.find('ul.radios');
-                $radios.empty();
+            var length = results.length;
 
-                var length = results.length;
+            for (var i = 0; i < length; i++) {
 
-                for (var i = 0; i < length; i++) {
+                var address = results[i];
 
-                    var address = results[i];
+                var street = (typeof address.street !== 'string' && address.street.length > 1) ? address.street.join(', ') : address.street;
+                var city = (typeof address.city !== 'string' && address.city.length > 1) ? address.city.join(', ') : address.city;
 
-                    var street = (typeof address.street !== 'string' && address.street.length > 1) ? address.street.join(', ') : address.street;
-                    var city = (typeof address.city !== 'string' && address.city.length > 1) ? address.city.join(', ') : address.city;
-
-                    var addressAr = [street, city, address.region, address.postcode, address.country];
-                    addressAr = addressAr.filter(function (n) {
-                        return n != undefined
-                    });
-
-                    var label = addressAr.join(', ');
-
-                    radios += '<li><label><input type="radio" class="radio" name="address" value="' + i + '" /> ' + label + '</label></li>';
-
-                }
-
-                //stick into list
-                $radios.append(radios);
-
-                //enable selection
-                $('.radio').click(function (e) {
-                    $('#av-popup .select').removeClass('disabled');
+                var addressAr = [street, city, address.region, address.postcode, address.country];
+                addressAr = addressAr.filter(function (n) {
+                    return n != undefined
                 });
 
-                //show popup
-                $('#av-popup').show();                
+                var label = addressAr.join(', ');
+
+                radios += '<li><label><input type="radio" class="radio" name="address" value="' + i + '" /> ' + label + '</label></li>';
+
             }
+
+            //stick into list
+            $radios.append(radios);
+
+            //enable selection
+            $('.radio').click(function (e) {
+                $('#av-popup .select').removeClass('disabled');
+            });
+
+            //show popup
+            $('#av-popup').show();                
 
         }
 

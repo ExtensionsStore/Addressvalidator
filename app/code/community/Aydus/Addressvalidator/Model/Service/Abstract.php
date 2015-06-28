@@ -166,7 +166,7 @@ abstract class Aydus_Addressvalidator_Model_Service_Abstract extends Mage_Core_M
 
             $ch = curl_init();
             //log curl errors
-            $f = fopen('var/log/addressvalidator.log', 'w');
+            $f = fopen('var/log/aydus_addressvalidator.log', 'w');
 
             curl_setopt($ch, CURLOPT_URL, $this->_url);
             $headers = array(
