@@ -156,7 +156,8 @@ class Aydus_Addressvalidator_Helper_Data extends Mage_Core_Helper_Abstract {
      */
     public function xmlToObject($xmlString) {
         //replace namespaces
-        $xmlString = preg_replace("/(<\/?)(\w+):([^>]*>)/", "$1$2$3", $xmlString);
+        $xmlString = preg_replace('/xmlns[^=]*="[^"]*"\s*/i', '', $xmlString);
+        $xmlString = preg_replace("/(<\/?)([^:]+):([^>]*>)/", "$1$3", $xmlString);
 
         $xml = simplexml_load_string($xmlString);
         $xmlJsonStr = json_encode($xml);
@@ -240,6 +241,7 @@ class Aydus_Addressvalidator_Helper_Data extends Mage_Core_Helper_Abstract {
             
         } catch(Exception $e){
             Mage::log($e->getMessage(),null, 'aydus_addressvalidator.log');
+            return false;
         }
         
         return true;

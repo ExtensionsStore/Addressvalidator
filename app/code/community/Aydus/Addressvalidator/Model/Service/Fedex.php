@@ -30,10 +30,10 @@ class Aydus_Addressvalidator_Model_Service_Fedex extends Aydus_Addressvalidator_
      */
     protected function _getMessage($customerAddress) {
         
-        $account = Mage::helper('core')->decrypt(Mage::getStoreConfig('carriers/fedex/account'));
-        $meter = Mage::helper('core')->decrypt(Mage::getStoreConfig('carriers/fedex/meter_number'));
-        $key = Mage::helper('core')->decrypt(Mage::getStoreConfig('carriers/fedex/key'));
-        $password = Mage::helper('core')->decrypt(Mage::getStoreConfig('carriers/fedex/password'));
+        $account = Mage::getStoreConfig('carriers/fedex/account');
+        $meter = Mage::getStoreConfig('carriers/fedex/meter_number');
+        $key = Mage::getStoreConfig('carriers/fedex/key');
+        $password = Mage::getStoreConfig('carriers/fedex/password');
 
         $extractableArray = $this->_getExtractableAddressArray($customerAddress);
         extract($extractableArray);
@@ -97,15 +97,23 @@ class Aydus_Addressvalidator_Model_Service_Fedex extends Aydus_Addressvalidator_
         
         $return = array();
         $return['error'] = true;
-
+        
         $responseJson = Mage::helper('addressvalidator')->xmlToObject($response);
 
-        $responseStatusCode = $responseJson->Response->ResponseStatusCode;
+        $body = @$responseJson->Body;
+        $addressValidationReply = @$body->AddressValidationReply;
+        $highestSeverity = @$addressValidationReply->HighestSeverity;
+        $notifications = @$addressValidationReply->Notifications;
+        $statusCode = @$notifications->Code;
+        $statusMessage = @$notifications->Message;
 
-        if ($responseStatusCode == 1) {
+        if ($highestSeverity == 'SUCCESS') {
+            
+            $addresses = $addressValidationReply->AddressResults;
+            $addresses = (!is_array($addresses)) ? array($addresses) : $addresses;
 
             $return['error'] = false;
-            $return['data'] = (!is_array($responseJson->AddressKeyFormat)) ? array($responseJson->AddressKeyFormat) : $responseJson->AddressKeyFormat;
+            $return['data'] = $addresses;
 
         } else {
 
@@ -124,7 +132,7 @@ class Aydus_Addressvalidator_Model_Service_Fedex extends Aydus_Addressvalidator_
     protected function _processResults(array $responseData) {
         $results = array();
         
-        foreach ($responseData as $i => $addressData) {
+        foreach ($responseData as $i => $result) {
 
             if ($i + 1 > $this->_numResults) {
 
@@ -132,26 +140,36 @@ class Aydus_Addressvalidator_Model_Service_Fedex extends Aydus_Addressvalidator_
             }
 
             try {
+                
+                $proposedAddressDetails = @$result->ProposedAddressDetails;
+                $score = (int)@$proposedAddressDetails->Score;
+                
+                if ($score > 50){
+                    
+                    $addressData = @$proposedAddressDetails->Address;
+                    
+                    $countryId = $addressData->CountryCode;
+                    $country = $addressData->CountryCode;
+                    $street = array($addressData->StreetLines);
+                    $city = $addressData->v2City;
+                    $regionModel = Mage::getModel('directory/region');
+                    $regionModel->loadByCode($addressData->StateOrProvinceCode, $countryId);
+                    $regionName = $regionModel->getName();
+                    $regionId = $regionModel->getId();
+                    $postcode = $addressData->PostalCode;
+                    
+                    $results[] = array(
+                            'country_id' => $countryId,
+                            'country' => $country,
+                            'street' => $street,
+                            'city' => $city,
+                            'region' => $regionName,
+                            'region_id' => $regionId,
+                            'postcode' => $postcode,
+                    );                    
+                }
+                
 
-                $countryId = $addressData->CountryCode;
-                $country = $addressData->CountryCode;
-                $street = array($addressData->AddressLine);
-                $city = $addressData->PoliticalDivision2;
-                $regionModel = Mage::getModel('directory/region');
-                $regionModel->loadByCode($addressData->PoliticalDivision1, $countryId);
-                $regionName = $regionModel->getName();
-                $regionId = $regionModel->getId();
-                $postcode = $addressData->PostcodePrimaryLow.'-'.$addressData->PostcodeExtendedLow;
-
-                $results[] = array(
-                    'country_id' => $countryId,
-                    'country' => $country,
-                    'street' => $street,
-                    'city' => $city,
-                    'region' => $regionName,
-                    'region_id' => $regionId,
-                    'postcode' => $postcode,
-                );
             } catch (Exception $e) {
                 Mage::log($e->getMessage(), null, 'aydus_addressvalidator.log');
             }
