@@ -19,8 +19,11 @@ class Aydus_Addressvalidator_Model_Service_Ups extends Aydus_Addressvalidator_Mo
 
     public function _construct() {
         parent::_construct();
-        $this->_url =  Mage::getStoreConfig('aydus_addressvalidator/ups/url');
-
+        $storeId = Mage::app()->getStore()->getId();
+        $url = Mage::getStoreConfig('aydus_addressvalidator/ups/url',$storeId);
+        if ($url){
+            $this->_url = $url;
+        }
     }
 
     /**
