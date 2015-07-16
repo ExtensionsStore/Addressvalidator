@@ -1,0 +1,7 @@
+config:
+    default/aydus_addressvalidator/configuration/enabled: 1
+    default/aydus_addressvalidator/configuration/service: ups
+    default/aydus_addressvalidator/ups/url: https://wwwcie.ups.com/ups.app/xml/XAV
+    default/aydus_addressvalidator/ups/access_license_number: 0:2:e2cd3e4a74601245:tAidQ8JX9KvWSgxZfOSnEQ==
+    default/aydus_addressvalidator/ups/user_id: 0:2:08671d15853f22a6:n07IpZghnz9TPpUI6GHEUQ==
+    default/aydus_addressvalidator/ups/password: 0:2:33180f60423a87fd:rXXk7EZq4vwAsuN+qYiCUg==

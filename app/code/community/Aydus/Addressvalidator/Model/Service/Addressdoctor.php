@@ -79,7 +79,7 @@ class Aydus_Addressvalidator_Model_Service_Addressdoctor extends Aydus_Addressva
      */
     protected function _getMessage($customerAddress) {
         $customerId = Mage::getStoreConfig('aydus_addressvalidator/addressdoctor/customer_id');
-        $password = Mage::getStoreConfig('aydus_addressvalidator/addressdoctor/password');
+        $password = Mage::helper('core')->decrypt(Mage::getStoreConfig('aydus_addressvalidator/addressdoctor/password'));
         $testMode = (int) Mage::getStoreConfig('aydus_addressvalidator/addressdoctor/test_mode');
         $test = ($testMode) ? 'TEST' : '';
 

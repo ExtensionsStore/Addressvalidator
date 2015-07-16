@@ -35,8 +35,8 @@ class Aydus_Addressvalidator_Model_Service_Ups extends Aydus_Addressvalidator_Mo
     protected function _getMessage($customerAddress) {
         
         $storeId = Mage::app()->getStore()->getId();
-        $accessLicenseNumber = Mage::getStoreConfig('aydus_addressvalidator/ups/access_license_number',$storeId);
-        $userId = Mage::getStoreConfig('aydus_addressvalidator/ups/user_id',$storeId);
+        $accessLicenseNumber = Mage::helper('core')->decrypt(Mage::getStoreConfig('aydus_addressvalidator/ups/access_license_number',$storeId));
+        $userId = Mage::helper('core')->decrypt(Mage::getStoreConfig('aydus_addressvalidator/ups/user_id',$storeId));
         $password = Mage::helper('core')->decrypt(Mage::getStoreConfig('aydus_addressvalidator/ups/password',$storeId));
 
         $extractableArray = $this->_getExtractableAddressArray($customerAddress);

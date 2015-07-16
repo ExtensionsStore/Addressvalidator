@@ -59,7 +59,7 @@ class Aydus_Addressvalidator_Model_Observer extends Mage_Core_Model_Abstract {
                 $address = $quote->getShippingAddress();
             }
 
-            $international = (Mage::getStoreConfig('general/country/default') != $address->getCountryId()) ? true : false;
+            $international = ($address->getCountryId() && Mage::getStoreConfig('general/country/default') != $address->getCountryId()) ? true : false;
             $service = $helper->getService($storeId, $international);
             $returned = array('error' => true);
 
@@ -97,10 +97,12 @@ class Aydus_Addressvalidator_Model_Observer extends Mage_Core_Model_Abstract {
                 }
 
                 $response->setBody(Mage::helper('core')->jsonEncode($result));
+                
+                $observer->setResult($result);
             }
         }
 
-        return $this;
+        return $observer;
     }
 
 }
