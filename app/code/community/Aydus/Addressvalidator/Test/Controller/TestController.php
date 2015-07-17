@@ -18,9 +18,9 @@ class Aydus_Addressvalidator_Test_Controller_TestController extends EcomDev_PHPU
      */
     public function testController()
     {
-        echo "\nAydus_Addressavalidator controller test started.";
+        echo "\nAydus_Addressavalidator controller test started";
                    
-        echo "\nAydus_Addressavalidator controller test completed.";
+        echo "\nAydus_Addressavalidator controller test completed";
     }
 	
 }

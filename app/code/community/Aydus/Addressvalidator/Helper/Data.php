@@ -51,8 +51,8 @@ class Aydus_Addressvalidator_Helper_Data extends Mage_Core_Helper_Abstract {
         $numAttempts = ($this->isDebug()) ? 200 : $numAttempts;
 
         $checkoutSession = Mage::getSingleton('checkout/session');
-        $numAttempted = (int) $checkoutSession->getNumAttempted();
-        $checkoutSession->setNumAttempted($numAttempted + 1);
+        $numAttempted = (int) $checkoutSession->getData('num_attempted');
+        $checkoutSession->setData('num_attempted', $numAttempted+1);
 
         return $numAttempted > $numAttempts;
     }
@@ -164,6 +164,29 @@ class Aydus_Addressvalidator_Helper_Data extends Mage_Core_Helper_Abstract {
         $xmlObject = json_decode($xmlJsonStr);
 
         return $xmlObject;
+    }
+    
+    /**
+     * @param Mage_Customer_Model_Address|Mage_Sales_Model_Quote_Address $address
+     * @return array
+     */
+    public function validateAddress($address)
+    {
+        $storeId = Mage::app()->getStore()->getId();
+        
+        $international = ($address->getCountryId() && Mage::getStoreConfig('general/country/default') != $address->getCountryId()) ? true : false;
+        $service = $this->getService($storeId, $international);
+        
+        $return = array('error' => true);
+        
+        try {
+            $return = $service->getResults($address);
+        } catch (Exception $e) {
+            $return['data'] = $e->getMessage();
+            Mage::log($e->getMessage(), null, 'aydus_addressvalidator.log');
+        }
+
+        return $return;
     }
     
     /**

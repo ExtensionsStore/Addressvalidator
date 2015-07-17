@@ -66,10 +66,11 @@ class Aydus_Addressvalidator_Model_Observer extends Mage_Core_Model_Abstract {
             try {
                 $returned = $service->getResults($address);
             } catch (Exception $e) {
+                $returned['data'] = $e->getMessage();
                 Mage::log($e->getMessage(), null, 'aydus_addressvalidator.log');
             }
 
-            if (!$returned['error']) {
+            if ($returned['error'] === false) {
                 
                 $responseCode = ($helper->isDebug() && isset($returned['response_code']) && $returned['response_code']) ? ' (' . $returned['response_code'] . ')' : '';
                 $result = array();
@@ -78,16 +79,17 @@ class Aydus_Addressvalidator_Model_Observer extends Mage_Core_Model_Abstract {
 
                 if (is_array($returned['data']) && count($returned['data']) > 0) {
                     
+                    $result['data'] = json_encode($returned['data']);
+                    $result['message'] = $helper->getMessaging('matches_available') . $responseCode;
+                    
                     $autoPopulate = (int)Mage::getStoreConfig('aydus_addressvalidator/configuration/auto_populate', $storeId);
                     
                     if ($autoPopulate){
                         if ($helper->setAddressData($address, $returned['data'][0])){
-                            return $this;
+                            $observer->setResult($result);
+                            return $observer;
                         }
                     }
-                    
-                    $result['data'] = json_encode($returned['data']);
-                    $result['message'] = $helper->getMessaging('matches_available') . $responseCode;
                     
                 } else {
 
