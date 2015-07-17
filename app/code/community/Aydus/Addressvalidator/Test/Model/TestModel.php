@@ -10,7 +10,7 @@
 
 class Aydus_Addressvalidator_Test_Model_TestModel extends EcomDev_PHPUnit_Test_Case_Config
 {	
-    protected $_numAttempted = 5;
+    protected $_numAttempted = 0;
     
     protected function _mockQuote()
     {

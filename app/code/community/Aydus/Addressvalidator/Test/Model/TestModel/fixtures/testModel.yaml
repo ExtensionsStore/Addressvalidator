@@ -1,6 +1,5 @@
 config:
     default/aydus_addressvalidator/configuration/enabled: 1
-    default/aydus_addressvalidator/configuration/num_attempts: 
     default/aydus_addressvalidator/configuration/service: ups
     default/aydus_addressvalidator/configuration/auto_populate: 1
     default/aydus_addressvalidator/ups/url: https://wwwcie.ups.com/ups.app/xml/XAV
