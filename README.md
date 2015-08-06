@@ -19,6 +19,11 @@ Validator and configure the extension with your validation provider
 
 <img src="md/settings.png" />
 
+Here's a screenshot of the popup:
+
+<img src="md/popup.png" />
+
+
 UPS
 ---
 For UPS, enter your access key, account number and password. Credentials can be
