@@ -11,7 +11,7 @@
 <config>
     <modules>
         <Aydus_Addressvalidator>
-            <version>1.3.0</version>
+            <version>1.4.0</version>
         </Aydus_Addressvalidator>
     </modules>
     <phpunit>
@@ -49,6 +49,16 @@
         </layout>		   
     </frontend>        
     <global>
+    	<events>
+    		<customer_address_save_after>
+			    <observers>
+			        <addressvalidator_update_address_validated>
+			            <class>aydus_addressvalidator/observer</class>
+			            <method>updateAddressValidated</method>
+			        </addressvalidator_update_address_validated>
+			    </observers>
+    		</customer_address_save_after>
+    	</events>
         <blocks>
             <aydus_addressvalidator>
                 <class>Aydus_Addressvalidator_Block</class>
@@ -57,7 +67,16 @@
         <models>
             <aydus_addressvalidator>
                 <class>Aydus_Addressvalidator_Model</class>
+                <resourceModel>aydus_addressvalidator_resource</resourceModel>
             </aydus_addressvalidator>
+            <aydus_addressvalidator_resource>
+                <class>Aydus_Addressvalidator_Model_Resource</class>
+                <entities>
+                    <address>
+                        <table>aydus_addressvalidator_addresses</table>
+                    </address>
+                </entities>
+            </aydus_addressvalidator_resource>	            
         </models>
         <helpers>
             <aydus_addressvalidator>

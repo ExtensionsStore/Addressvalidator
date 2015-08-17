@@ -14,14 +14,26 @@ class Aydus_Addressvalidator_Model_Observer extends Mage_Core_Model_Abstract {
      * Validate address using configured service, rewrite response if suggestions available
      * 
      * @param Varien_Event_Observer $observer
+     * @return Varien_Event_Observer $observer
      */
     public function validateAddress($observer) {
+        
         $request = Mage::app()->getRequest();
         //skip validation if already validated
         $addressValidated = $request->getParam('address_validated');
         if ($addressValidated) {
-            return $this;
+            return $observer;
         }
+        $addressId = $request->getParam('billing_address_id');
+        if (!$addressId){
+            $addressId = $request->getParam('shipping_address_id');
+        }
+        $validatedAddress = Mage::getModel('aydus_addressvalidator/address');
+        $validatedAddress->load($addressId, 'address_id');
+        
+        if ($validatedAddress->getId() && $validatedAddress->getValidated()){
+            return $observer;
+        }        
 
         $event = $observer->getEvent();
         $controller = $event->getControllerAction();
@@ -47,15 +59,14 @@ class Aydus_Addressvalidator_Model_Observer extends Mage_Core_Model_Abstract {
         $validateStore = $helper->validateStore($store);
 
         if ($validateStore) {
-
-            $event = $observer->getEvent();
+            
             $quote = Mage::getSingleton('checkout/session')->getQuote();
-
+            
             if ($event->getName() == 'controller_action_postdispatch_checkout_onepage_saveBilling') {
-
+            
                 $address = $quote->getBillingAddress();
             } else {
-
+            
                 $address = $quote->getShippingAddress();
             }
 
@@ -76,19 +87,19 @@ class Aydus_Addressvalidator_Model_Observer extends Mage_Core_Model_Abstract {
                 $result = array();
                 $result['validate'] = true;
                 $result['error'] = false;
-
+                
                 if (is_array($returned['data']) && count($returned['data']) > 0) {
                     
                     $result['data'] = json_encode($returned['data']);
                     $result['message'] = $helper->getMessaging('matches_available') . $responseCode;
                     
+                    $helper->setAddressData($address, $returned['data'][0]);
+                                        
                     $autoPopulate = (int)Mage::getStoreConfig('aydus_addressvalidator/configuration/auto_populate', $storeId);
                     
                     if ($autoPopulate){
-                        if ($helper->setAddressData($address, $returned['data'][0])){
-                            $observer->setResult($result);
-                            return $observer;
-                        }
+                        $observer->setResult($result);
+                        return $observer;
                     }
                     
                 } else {
@@ -98,12 +109,63 @@ class Aydus_Addressvalidator_Model_Observer extends Mage_Core_Model_Abstract {
                     $result['message'] = $helper->getMessaging('invalid_address') . $responseCode;
                 }
 
-                $response->setBody(Mage::helper('core')->jsonEncode($result));
+                $rates = null;
+                
+                if ($address->getAddressType()=='billing'){
+                
+                    $billing = $request->getParam('billing');
+                
+                    if ($billing['use_for_shipping']){
+                        $rates = $quote->getShippingAddress()->collectShippingRates()->getGroupedAllShippingRates();
+                    }
+                }
+                
+                if (is_array($rates) && count($rates)>0){
+                    $response->setBody(Mage::helper('core')->jsonEncode($result));
+                }
                 
                 $observer->setResult($result);
             }
         }
 
+        return $observer;
+    }
+
+    /**
+     * Unflag customer address previously validated
+     * 
+     * @see customer_address_save_after
+     * @param Varien_Event_Observer $observer
+     * @return Varien_Event_Observer $observer
+     */
+    public function updateAddressValidated($observer)
+    {
+        $customerAddress = $observer->getCustomerAddress();
+        
+        if (!$customerAddress->getPopulated()){
+            
+            $validatedAddress = Mage::getModel('aydus_addressvalidator/address');
+            $validatedAddress->load($customerAddress->getId(), 'address_id');
+            
+            $datetime = date('Y-m-d H:i:s');
+            $validatedAddress->setValidated(0);
+            
+            if (!$validatedAddress->getId()){
+                $validatedAddress->setDateCreated($datetime);
+            }
+            $validatedAddress->setDateUpdated($datetime);
+            
+            try {
+            
+                $validatedAddress->save();
+            
+            }catch (Exception $e){
+            
+                Mage::log($e->getMessage(),null,'aydus_addressvalidator.log');
+            }
+            
+        }
+        
         return $observer;
     }
 

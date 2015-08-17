@@ -235,7 +235,21 @@ class Aydus_Addressvalidator_Helper_Data extends Mage_Core_Helper_Abstract {
                                 
                 $customerAddress = Mage::getModel('customer/address')->load($customerAddressId);
                 $customerAddress->addData($data);
-                $customerAddress->save();                
+                $customerAddress->setPopulated(1);
+                $customerAddress->save();   
+
+                $datetime = date('Y-m-d H:i:s');
+                
+                $validatedAddress = Mage::getModel('aydus_addressvalidator/address');
+                $validatedAddress->load($customerAddress->getId(), 'address_id');
+                $validatedAddress->setAddressId($customerAddress->getId());
+                $validatedAddress->setAddressType($customerAddress->getAddressType());
+                $validatedAddress->setValidated(1);
+                if (!$validatedAddress->getId()){
+                    $validatedAddress->setDateCreated($datetime);
+                }
+                $validatedAddress->setDateUpdated($datetime);
+                $validatedAddress->save();
             }
             
             if ($address->getAddressType() == 'billing'){
@@ -255,7 +269,22 @@ class Aydus_Addressvalidator_Helper_Data extends Mage_Core_Helper_Abstract {
                     
                         $customerShippingAddress = Mage::getModel('customer/address')->load($customerAddressId);
                         $customerShippingAddress->addData($data);
+                        $customerShippingAddress->setPopulated(1);
                         $customerShippingAddress->save();
+                        
+                        $datetime = date('Y-m-d H:i:s');
+                        
+                        $validatedShippingAddress = Mage::getModel('aydus_addressvalidator/address');
+                        $validatedShippingAddress->load($customerShippingAddress->getId(), 'address_id');
+                        $validatedShippingAddress->setAddressId($customerShippingAddress->getId());
+                        $validatedShippingAddress->setAddressType($customerShippingAddress->getAddressType());
+                        $validatedShippingAddress->setValidated(1);
+                        if (!$validatedShippingAddress->getId()){
+                            $validatedShippingAddress->setDateCreated($datetime);
+                        }
+                        $validatedShippingAddress->setDateUpdated($datetime);
+                        $validatedShippingAddress->save();                        
+                        
                     }                    
                     
                 }
