@@ -24,14 +24,6 @@ function AddressValidator($)
         //set the popup scope for any js that needs it
         $('#address-form').val(form);
 
-        //placeholder so address doesn't get validated again
-        var $addressValidated = $('#' + form).find('.address-validated');
-        if ($addressValidated.length > 0) {
-            $addressValidated.val(1);
-        } else {
-            $('#' + form).append('<input type="hidden" class="address-validated" name="address_validated" value="1" />');
-        }
-
         try {
             results = JSON.parse(resultsJson);
         } catch (e) {
@@ -49,8 +41,6 @@ function AddressValidator($)
             $popup.find('h4').html(message);
             //show buttons we hid in editAddress
             $popup.find('.select').show();
-            //hide skip button per JM
-            $popup.find('.skip, .okay').hide();
             var $radios = $popup.find('ul.radios');
             $radios.empty();
 
@@ -109,7 +99,7 @@ function AddressValidator($)
             //append message
             $popup.find('h4').html(message);
             //hide the select button (nothing to select) and skip button (per JM)
-            $popup.find('.select, .skip, .okay').hide();
+            $popup.find('.select, .okay').hide();
             //show popup
             $('#av-popup').show();
     	}
@@ -167,6 +157,7 @@ function AddressValidator($)
     {
         //deselect addressbook entry
         $('#' + formType + '-new-address-form').show();
+        var customerAddressId = $('#' + formType + '-address-select').val();
         $('#' + formType + '-address-select').val(null);
 
         $('#' + formType + '\\:street1').val(address.street[0]);
@@ -187,7 +178,15 @@ function AddressValidator($)
         $('#' + formType + '\\:postcode').val(address.postcode);
         $('#' + formType + '\\:country_id').val(address.country_id);
 
-        $('#' + formType + '\\:save_in_address_book').attr('checked',true);    
+        $('#' + formType + '\\:save_in_address_book').attr('checked',true);  
+        
+        var $addressValidated = $('#co-' + formType + '-form').find('.address-validated');
+        if ($addressValidated.length > 0) {
+            $addressValidated.val(customerAddressId);
+        } else {
+            $('#co-' + formType + '-form').append('<input type="hidden" class="address-validated" name="address_validated" value="'+customerAddressId+'" />');
+        }
+        
     };
 
     /**
@@ -270,6 +269,9 @@ function AddressValidator($)
 
                     e.preventDefault();
                     e.stopPropagation();
+                    
+                    var form = $('#address-form').val();
+                    $('#' + form).append('<input type="hidden" class="skip-validation" name="skip_validation" value="1" />');
 
                     gotoNextStep();
 

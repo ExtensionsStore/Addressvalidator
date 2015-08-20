@@ -6,6 +6,10 @@
  * @package    Aydus_Addressvalidator
  * @author     Aydus <davidt@aydus.com>
  */
+
+$storeId = Mage::app()->getStore()->getId();
+$tooManyAttemptsUrl = Mage::getStoreConfig('aydus_addressvalidator/configuration/too_many_attempts_url',$storeId);
+$customerServiceUrl = $this->getUrl($tooManyAttemptsUrl);
 ?>
 
 
@@ -32,7 +36,7 @@
                     <span><span><?php echo $this->__('Skip') ?></span></span>
                 </button>
 
-                <button class="button okay" href="<?php echo $this->getUrl('customer-service') ?>">
+                <button class="button okay" href="<?php echo $customerServiceUrl ?>">
                     <span><span><?php echo $this->__('Customer Service') ?></span></span>
                 </button>
 

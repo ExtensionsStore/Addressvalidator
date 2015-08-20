@@ -11,7 +11,7 @@
 <config>
     <modules>
         <Aydus_Addressvalidator>
-            <version>1.4.0</version>
+            <version>1.4.1</version>
         </Aydus_Addressvalidator>
     </modules>
     <phpunit>

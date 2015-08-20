@@ -54,7 +54,7 @@
                             <comment><![CDATA[Select the number of validation attempts allowed (minimum 1, maximum 25).]]></comment>
                         </num_attempts>  
                         <too_many_attempts_url translate="label">
-                            <label>Redirect URL</label>
+                            <label>Customer Service URL</label>
                             <frontend_type>text</frontend_type>
                             <sort_order>4</sort_order>
                             <show_in_default>1</show_in_default>
