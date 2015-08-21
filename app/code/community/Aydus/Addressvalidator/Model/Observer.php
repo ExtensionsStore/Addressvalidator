@@ -44,7 +44,7 @@ class Aydus_Addressvalidator_Model_Observer extends Mage_Core_Model_Abstract {
                 $postData = $request->getParam('shipping');
             }
             $postData['customer_address_id'] = $addressValidated;
-            $helper->setAddressData($address, $postData, false);
+            $helper->setAddressData($address, $postData, true);
             return $observer;
         }
         

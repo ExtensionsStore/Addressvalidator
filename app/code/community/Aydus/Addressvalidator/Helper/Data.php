@@ -263,6 +263,7 @@ class Aydus_Addressvalidator_Helper_Data extends Mage_Core_Helper_Abstract {
                                 
                 if (@$postData['use_for_shipping']){
                     
+                    unset($data['address_id']);
                     $quote = Mage::getSingleton('checkout/session')->getQuote();
                     $shippingAddress = $quote->getShippingAddress();
                     
