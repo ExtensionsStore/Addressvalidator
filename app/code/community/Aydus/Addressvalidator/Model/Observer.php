@@ -153,8 +153,10 @@ class Aydus_Addressvalidator_Model_Observer extends Mage_Core_Model_Abstract {
     public function updateAddressValidated($observer)
     {
         $customerAddress = $observer->getCustomerAddress();
+        $request = Mage::app()->getRequest();
+        $moduleName = $request->getModuleName();
         
-        if ($customerAddress->getId() && !$customerAddress->getPopulated()){
+        if ($customerAddress->getId() && $moduleName != 'checkout'){
             
             $validatedAddress = Mage::getModel('aydus_addressvalidator/address');
             $validatedAddress->load($customerAddress->getId(), 'address_id');
