@@ -59,18 +59,15 @@ function AddressValidator($)
                 });
 
                 var label = addressAr.join(', ');
+                
+                var checked = (i == 0) ? 'checked="checked"' : '';
 
-                radios += '<li><label><input type="radio" class="radio" name="address" value="' + i + '" /> ' + label + '</label></li>';
+                radios += '<li><label><input type="radio" class="radio" '+checked+' name="address" value="' + i + '" /> ' + label + '</label></li>';
 
             }
 
             //stick into list
             $radios.append(radios);
-
-            //enable selection
-            $('.radio').click(function (e) {
-                $('#av-popup .select').removeClass('disabled');
-            });
 
             //show popup
             $('#av-popup').show();                
