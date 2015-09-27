@@ -1,8 +1,8 @@
-app/code/community/Aydus/Addressvalidator                                     app/code/community/Aydus/Addressvalidator
-app/design/frontend/base/default/layout/aydus/addressvalidator.xml            app/design/frontend/base/default/layout/aydus/addressvalidator.xml
-app/design/frontend/base/default/template/aydus/addressvalidator              app/design/frontend/base/default/template/aydus/addressvalidator
-app/etc/modules/Aydus_Addressvalidator.xml                                    app/etc/modules/Aydus_Addressvalidator.xml
-skin/frontend/base/default/css/aydus/addressvalidator.css                     skin/frontend/base/default/css/aydus/addressvalidator.css
-skin/frontend/base/default/images/aydus/addressvalidator                      skin/frontend/base/default/images/aydus/addressvalidator
-skin/frontend/base/default/js/aydus/addressvalidator.js                       skin/frontend/base/default/js/aydus/addressvalidator.js
-skin/frontend/base/default/js/aydus/addressvalidator/address.js               skin/frontend/base/default/js/aydus/addressvalidator/address.js
+app/code/community/ExtensionsStore/Addressvalidator                                     app/code/community/ExtensionsStore/Addressvalidator
+app/design/frontend/base/default/layout/extensions_store/addressvalidator.xml            app/design/frontend/base/default/layout/extensions_store/addressvalidator.xml
+app/design/frontend/base/default/template/extensions_store/addressvalidator              app/design/frontend/base/default/template/extensions_store/addressvalidator
+app/etc/modules/ExtensionsStore_Addressvalidator.xml                                    app/etc/modules/ExtensionsStore_Addressvalidator.xml
+skin/frontend/base/default/css/extensions_store/addressvalidator.css                     skin/frontend/base/default/css/extensions_store/addressvalidator.css
+skin/frontend/base/default/images/extensions_store/addressvalidator                      skin/frontend/base/default/images/extensions_store/addressvalidator
+skin/frontend/base/default/js/extensions_store/addressvalidator.js                       skin/frontend/base/default/js/extensions_store/addressvalidator.js
+skin/frontend/base/default/js/extensions_store/addressvalidator/address.js               skin/frontend/base/default/js/extensions_store/addressvalidator/address.js

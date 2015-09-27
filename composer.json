@@ -1,17 +1,17 @@
 {
-    "name": "aydus/addressvalidator",
+    "name": "extensions-store/addressvalidator",
     "license": "GPL-3.0",
     "type": "magento-module",
     "description": "Validate billing and shipping addresses in the One Page Checkout.",
-    "homepage": "https://github.com/aydus/Addressvalidator.git",
+    "homepage": "https://github.com/ExtensionsStore/Addressvalidator.git",
     "require": {
         "php": ">=5.3",
         "magento-hackathon/magento-composer-installer": "*"
     },
     "authors": [
         {
-            "name": "David Tay",
-            "email": "davidt@aydus.com",
+            "name": "Extensions Store",
+            "email": "admin@extensions-store.com",
             "role": "Author/Maintainer"
         }
     ]

@@ -12,7 +12,7 @@ Doctor and Melissa Data.
 How to use
 -------------------------
 Upload the files to the root of your Magento install. Let the install script 
-run. This will create the table aydus_addressvalidator_responses to hold 
+run. This will create the table extensions_store_addressvalidator_responses to hold 
 requests and responses. In the System -> Configuration, go to Sales -> Address 
 Validator and configure the extension with your validation provider 
 (UPS, USPS, Fedex, Address Doctor, Melissa Data, etc.) account. Clear cache. 
@@ -35,4 +35,4 @@ Developer Resource Center.</a>
 
 Per the UPS Developer terms of service, the UPS logo must be visible on your 
 site. Logo images can be found under  
-skin/frontend/base/default/images/aydus/addressvalidator/LOGO_L.gif. 
+skin/frontend/base/default/images/extensions_store/addressvalidator/LOGO_L.gif. 

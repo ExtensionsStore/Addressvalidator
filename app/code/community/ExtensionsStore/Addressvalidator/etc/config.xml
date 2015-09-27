@@ -1,0 +1,124 @@
+<?xml version="1.0"?>
+<!--
+/**
+ *  Address Validator
+ *
+ * @category   ExtensionsStore
+ * @package    ExtensionsStore_Addressvalidator
+ * @author     Extensions Store <admin@extensions-store.com>
+ */
+-->
+<config>
+    <modules>
+        <ExtensionsStore_Addressvalidator>
+            <version>1.4.5</version>
+        </ExtensionsStore_Addressvalidator>
+    </modules>
+    <phpunit>
+        <suite>
+            <modules>
+                <ExtensionsStore_Addressvalidator />
+            </modules>
+        </suite>
+    </phpunit>      
+    <frontend>
+        <events>
+            <controller_action_postdispatch_checkout_onepage_saveBilling>
+                <observers>
+                    <addressvalidator_checkaddress>
+                            <class>extensions_store_addressvalidator/observer</class>
+                            <method>validateAddress</method>
+                        </addressvalidator_checkaddress>
+                </observers>
+            </controller_action_postdispatch_checkout_onepage_saveBilling>
+            <controller_action_postdispatch_checkout_onepage_saveShipping>
+                <observers>
+                    <addressvalidator_checkaddress>
+                            <class>extensions_store_addressvalidator/observer</class>
+                            <method>validateAddress</method>
+                        </addressvalidator_checkaddress>
+                </observers>
+            </controller_action_postdispatch_checkout_onepage_saveShipping>
+        </events>     
+        <layout>
+            <updates>
+                <extensions_store_addressvalidator>
+                    <file>extensions_store/addressvalidator.xml</file>
+                </extensions_store_addressvalidator>
+            </updates>
+        </layout>		   
+    </frontend>        
+    <global>
+    	<events>
+    		<customer_address_save_after>
+			    <observers>
+			        <addressvalidator_update_address_validated>
+			            <class>extensions_store_addressvalidator/observer</class>
+			            <method>updateAddressValidated</method>
+			        </addressvalidator_update_address_validated>
+			    </observers>
+    		</customer_address_save_after>
+    	</events>
+        <blocks>
+            <extensions_store_addressvalidator>
+                <class>ExtensionsStore_Addressvalidator_Block</class>
+            </extensions_store_addressvalidator>
+        </blocks>
+        <models>
+            <extensions_store_addressvalidator>
+                <class>ExtensionsStore_Addressvalidator_Model</class>
+                <resourceModel>extensions_store_addressvalidator_resource</resourceModel>
+            </extensions_store_addressvalidator>
+            <extensions_store_addressvalidator_resource>
+                <class>ExtensionsStore_Addressvalidator_Model_Resource</class>
+                <entities>
+                    <address>
+                        <table>extensions_store_addressvalidator_addresses</table>
+                    </address>
+                </entities>
+            </extensions_store_addressvalidator_resource>	            
+        </models>
+        <helpers>
+            <extensions_store_addressvalidator>
+                <class>ExtensionsStore_Addressvalidator_Helper</class>
+            </extensions_store_addressvalidator>
+            <addressvalidator>
+                <class>ExtensionsStore_Addressvalidator_Helper</class>
+            </addressvalidator>            
+        </helpers>
+        <resources>
+            <extensions_store_addressvalidator_setup>
+                <setup>
+                    <module>ExtensionsStore_Addressvalidator</module>
+                </setup>
+                <connection>
+                    <use>core_setup</use>
+                </connection>
+            </extensions_store_addressvalidator_setup>        
+        </resources>            
+    </global>
+    <default>
+        <extensions_store_addressvalidator>
+            <configuration>
+                <service>usps</service>
+                <num_results>5</num_results>
+                <num_attempts>3</num_attempts>
+                <too_many_attempts_url>contact-us</too_many_attempts_url>
+            </configuration>
+            <ups>
+            	<url>https://onlinetools.ups.com/ups.app/xml/XAV</url>
+            </ups>
+            <messaging>
+                <too_many_attempts><![CDATA[We're sorry, but we are unable to verify your address after several attempts. Please contact Customer Service.]]></too_many_attempts>
+                <matches_available><![CDATA[Address Verification: Please click a verified address below, or click Back to edit your information.]]></matches_available>
+                <invalid_address><![CDATA[Address Verification: No match found; please click Back to edit your information.]]></invalid_address>
+            </messaging>
+            <usps>
+                <gateway_url><![CDATA[http://production.shippingapis.com/ShippingAPI.dll]]></gateway_url>
+            </usps>
+            <addressdoctor>
+                <valid_exceptions><![CDATA[a:4:{i:0;a:14:{s:12:"country_name";s:6:"Jordan";s:9:"iso3_code";s:3:"JOR";s:2:"V4";i:1;s:2:"V3";i:1;s:2:"V2";i:1;s:2:"V1";i:0;s:2:"C4";i:1;s:2:"C3";i:1;s:2:"C2";i:1;s:2:"C1";i:0;s:2:"I4";i:1;s:2:"I3";i:1;s:2:"I2";i:0;s:2:"I1";i:0;}i:1;a:14:{s:12:"country_name";s:11:"New Zealand";s:9:"iso3_code";s:3:"NZL";s:2:"V4";i:1;s:2:"V3";i:1;s:2:"V2";i:1;s:2:"V1";i:0;s:2:"C4";i:1;s:2:"C3";i:1;s:2:"C2";i:0;s:2:"C1";i:0;s:2:"I4";i:1;s:2:"I3";i:1;s:2:"I2";i:0;s:2:"I1";i:0;}i:2;a:14:{s:12:"country_name";s:12:"Saudi Arabia";s:9:"iso3_code";s:3:"SAU";s:2:"V4";i:1;s:2:"V3";i:1;s:2:"V2";i:1;s:2:"V1";i:0;s:2:"C4";i:1;s:2:"C3";i:1;s:2:"C2";i:1;s:2:"C1";i:0;s:2:"I4";i:1;s:2:"I3";i:1;s:2:"I2";i:0;s:2:"I1";i:0;}i:3;a:14:{s:12:"country_name";s:20:"United Arab Emirates";s:9:"iso3_code";s:3:"ARE";s:2:"V4";i:1;s:2:"V3";i:1;s:2:"V2";i:1;s:2:"V1";i:0;s:2:"C4";i:1;s:2:"C3";i:1;s:2:"C2";i:1;s:2:"C1";i:0;s:2:"I4";i:1;s:2:"I3";i:1;s:2:"I2";i:0;s:2:"I1";i:0;}}]]></valid_exceptions>
+            </addressdoctor>
+        </extensions_store_addressvalidator>
+    </default>	     
+</config>

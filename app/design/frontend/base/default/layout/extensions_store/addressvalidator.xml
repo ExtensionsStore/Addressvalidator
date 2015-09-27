@@ -1,0 +1,31 @@
+<?xml version="1.0"?>
+<!--
+/**
+ * Address Validator 
+ *
+ * @category   ExtensionsStore
+ * @package    ExtensionsStore_Addressvalidator
+ * @author     Extensions Store <admin@extensions-store.com>
+ */
+-->
+<layout version="0.1.0">
+
+    <checkout_onepage_index>
+	
+        <reference name="head">
+            <action method="addCss">
+                <stylesheet>css/extensions_store/addressvalidator.css</stylesheet>
+            </action>
+            <action method="addItem">
+                <type>skin_js</type>
+                <name>js/extensions_store/addressvalidator.js</name>
+            </action>	            
+        </reference>
+			
+        <reference name="before_body_end">
+            <block type="core/template" name="addressvalidator.popup" template ="extensions_store/addressvalidator/popup.phtml" />
+        </reference>
+        
+    </checkout_onepage_index>
+
+</layout>

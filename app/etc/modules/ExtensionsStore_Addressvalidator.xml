@@ -1,0 +1,18 @@
+<?xml version="1.0"?>
+<!-- 
+/**
+ * Address Validator module
+ *
+ * @category   ExtensionsStore
+ * @package    ExtensionsStore_Addressvalidator
+ * @author     Extensions Store <admin@extensions-store.com>
+ */
+-->
+<config>
+    <modules>
+        <ExtensionsStore_Addressvalidator>
+            <active>true</active>
+            <codePool>community</codePool>
+        </ExtensionsStore_Addressvalidator>     
+    </modules>
+</config>
