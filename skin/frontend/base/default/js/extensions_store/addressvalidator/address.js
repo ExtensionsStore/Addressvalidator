@@ -20,32 +20,34 @@ if (window.shipping){
 	                response = {};
 	            }
 	        }
+	        
+	        var addressValidatorObj = response.address_validator;
 
-	        if (response && response.validate) {
-	            if (!response.error) {
+	        if (addressValidatorObj && addressValidatorObj.validate) {
+	            if (!addressValidatorObj.error) {
 
-	                if (typeof response.data == 'string') {
-	                    addressValidator.validateAddress('co-billing-form', response.message, response.data);
+	                if (typeof addressValidatorObj.data == 'string') {
+	                    addressValidator.validateAddress('co-billing-form', addressValidatorObj.message, addressValidatorObj.data);
 	                }
 	            } else {
-	                if (response.data.indexOf('http') != -1) {
-	                    addressValidator.redirectSupport(response.message, response.data);
+	                if (addressValidatorObj.data.indexOf('http') != -1) {
+	                    addressValidator.redirectSupport(addressValidatorObj.message, addressValidatorObj.data);
 	                } else {
-	                    addressValidator.editAddress('co-billing-form', response.message);
+	                    addressValidator.editAddress('co-billing-form', addressValidatorObj.message);
 	                }
 	                return false;
 	            }
 	        }
 
-	        if (response.error) {
-	            if ((typeof response.message) == 'string') {
-	                alert(response.message);
+	        if (addressValidatorObj && addressValidatorObj.error) {
+	            if ((typeof addressValidatorObj.message) == 'string') {
+	                alert(addressValidatorObj.message);
 	            } else {
 	                if (window.billingRegionUpdater) {
 	                    billingRegionUpdater.update();
 	                }
 
-	                alert(response.message.join("\n"));
+	                alert(addressValidatorObj.message.join("\n"));
 	            }
 
 	            return false;
@@ -71,31 +73,33 @@ if (window.shipping){
 	                response = {};
 	            }
 	        }
+	        
+	        var addressValidatorObj = response.address_validator;
 
-	        if (response && response.validate) {
+	        if (addressValidatorObj && addressValidatorObj.validate) {
 
-	            if (!response.error) {
-	                if (typeof response.data == 'string') {
-	                    addressValidator.validateAddress('co-shipping-form', response.message, response.data);
+	            if (!addressValidatorObj.error) {
+	                if (typeof addressValidatorObj.data == 'string') {
+	                    addressValidator.validateAddress('co-shipping-form', addressValidatorObj.message, addressValidatorObj.data);
 	                }
 	            } else {
 	                if (response.data.indexOf('http') != -1) {
-	                    addressValidator.redirectSupport(response.message, response.data);
+	                    addressValidator.redirectSupport(addressValidatorObj.message, addressValidatorObj.data);
 	                } else {
-	                    addressValidator.editAddress('co-shipping-form', response.message);
+	                    addressValidator.editAddress('co-shipping-form', addressValidatorObj.message);
 	                }
 	                return false;
 	            }
 	        }
 
-	        if (response.error) {
-	            if ((typeof response.message) == 'string') {
-	                alert(response.message);
+	        if (addressValidatorObj && addressValidatorObj.error) {
+	            if ((typeof addressValidatorObj.message) == 'string') {
+	                alert(addressValidatorObj.message);
 	            } else {
 	                if (window.shippingRegionUpdater) {
 	                    shippingRegionUpdater.update();
 	                }
-	                alert(response.message.join("\n"));
+	                alert(addressValidatorObj.message.join("\n"));
 	            }
 
 	            return false;

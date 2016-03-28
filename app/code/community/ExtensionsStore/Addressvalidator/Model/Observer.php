@@ -27,7 +27,9 @@ class ExtensionsStore_Addressvalidator_Model_Observer extends Mage_Core_Model_Ab
         $storeId = $store->getId();
         $quote = Mage::getSingleton('checkout/session')->getQuote();
         
-        if ($event->getName() == 'controller_action_postdispatch_checkout_onepage_saveBilling') {
+        if (strtolower($event->getName()) == 'controller_action_postdispatch_checkout_onepage_savebilling' ||
+        		($event->getName() == 'controller_action_postdispatch_onestepcheckout_ajax_save_billing') && 
+        		$request->getParam('form_id') == 'billing_address') {
         
             $address = $quote->getBillingAddress();
         } else {
@@ -36,13 +38,13 @@ class ExtensionsStore_Addressvalidator_Model_Observer extends Mage_Core_Model_Ab
         }
         
         //save validated address
-        $addressValidated = $request->getParam('address_validated');
+        if ($address->getAddressType()=='billing'){
+        	$postData = $request->getParam('billing');
+        } else {
+            $postData = $request->getParam('shipping');
+        }        
+        $addressValidated = $postData['address_validated'];
         if ($addressValidated) {
-            if ($address->getAddressType()=='billing'){
-                $postData = $request->getParam('billing');
-            } else {
-                $postData = $request->getParam('shipping');
-            }
             $postData['customer_address_id'] = $addressValidated;
             $helper->setAddressData($address, $postData, true);
             return $observer;
@@ -98,6 +100,7 @@ class ExtensionsStore_Addressvalidator_Model_Observer extends Mage_Core_Model_Ab
                 
                 $responseCode = ($helper->isDebug() && isset($returned['response_code']) && $returned['response_code']) ? ' (' . $returned['response_code'] . ')' : '';
                 $result = array();
+                $result['form_id'] = $request->getParam('form_id');
                 $result['validate'] = true;
                 $result['error'] = false;
                 
@@ -120,21 +123,14 @@ class ExtensionsStore_Addressvalidator_Model_Observer extends Mage_Core_Model_Ab
                     $result['data'] = $returned['data'];
                     $result['message'] = $helper->getMessaging('invalid_address') . $responseCode;
                 }
-
-                $rates = null;
                 
-                if ($address->getAddressType()=='billing'){
-                
-                    $billing = $request->getParam('billing');
-                
-                    if ($billing['use_for_shipping']){
-                        $rates = $quote->getShippingAddress()->collectShippingRates()->getGroupedAllShippingRates();
-                    }
-                }
-                
-                if (is_array($rates) && count($rates)>0){
-                    $response->setBody(Mage::helper('core')->jsonEncode($result));
-                }
+                $body = $response->getBody();
+                $responseBody = json_decode($body, true);
+                $responseBody = (is_array($responseBody)) ? $responseBody : array();
+                unset($responseBody['goto_section']);
+                $responseBody['address_validator'] = $result;
+                	
+                $response->setBody(Mage::helper('core')->jsonEncode($responseBody));
                 
                 $observer->setResult($result);
             }

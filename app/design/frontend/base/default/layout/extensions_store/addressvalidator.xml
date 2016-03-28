@@ -27,5 +27,21 @@
         </reference>
         
     </checkout_onepage_index>
+    
+    <onestepcheckout_index_index>
+        <reference name="head">
+            <action method="addCss">
+                <stylesheet>css/extensions_store/addressvalidator.css</stylesheet>
+            </action>
+            <action method="addItem">
+                <type>skin_js</type>
+                <name>js/extensions_store/addressvalidator.js</name>
+            </action>	            
+        </reference>
+			
+        <reference name="before_body_end">
+            <block type="core/template" name="addressvalidator.popup" template ="extensions_store/addressvalidator/popup.phtml" />
+        </reference>
+    </onestepcheckout_index_index>    
 
 </layout>

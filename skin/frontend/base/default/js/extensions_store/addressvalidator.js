@@ -13,6 +13,133 @@ function AddressValidator($)
     var results = [];
     
     /**
+     * Initialize popup
+     * 
+     */
+    var initialize = function()
+    {
+        $('#co-billing-form .required-entry, #co-shipping-form .required-entry').change(function (e) {
+        	$(this.form).find('.address-validated').val(0);
+        });
+        
+        //close the popup and stay on the current step
+        $('#av-popup .back').click(function (e) {
+
+            var form = $('#address-form').val();
+            e.preventDefault();
+            e.stopPropagation();
+            //allow validation
+            $('#' + form).find('.address-validated').val(0);
+            $('#av-popup').hide();
+
+        });
+
+        //handle address selection
+        $('#av-popup .select').click(function (e) {
+
+            e.preventDefault();
+            e.stopPropagation();
+
+            var $checkedRadio = $('#av-popup .radio:checked');
+            var checked = ($checkedRadio.length > 0) ? true : false;
+
+            if (checked) {
+
+                var i = $checkedRadio.val();
+
+                if (!isNaN(i)) {
+
+                    var formType = getFormType();
+
+                    i = parseInt(i);
+                    var address = results[i];
+
+                    //populate form
+                    if (address) {
+
+                        populate(formType, address);
+                    }
+
+                    $('#av-popup').hide();
+
+                    gotoNextStep();
+
+                }
+            }
+
+        });
+
+        //skip address validation and continue
+        $('#av-popup .skip').click(function (e) {
+
+            e.preventDefault();
+            e.stopPropagation();
+            
+            var form = $('#address-form').val();
+            $('#' + form).append('<input type="hidden" class="skip-validation" name="skip_validation" value="1" />');
+
+            gotoNextStep();
+
+            $('#av-popup').hide();
+        });
+
+        //too many attempts redirect button
+        $('#av-popup .okay').click(function (e) {
+
+            e.preventDefault();
+            e.stopPropagation();
+
+            var href = $(this).attr('href');
+
+            if (href.indexOf('http') != -1) {
+
+                window.location.href = href;
+            } else {
+
+                window.location.href = 'customer-service';
+            }
+        });       	
+    };
+    
+    /**
+     * Initialize one step checkout
+     */
+    var initOneStepCheckout = function()
+    {
+        //onestepcheckout form input change
+        $('#billing_address .required-entry').change(function (e) {
+        	$('#billing_address').find('.address-validated').val(0);
+        });
+        $('#shipping_address .required-entry').change(function (e) {
+            $('#shipping_address').find('.address-validated').val(0);
+    	});
+    	
+        Ajax.Responders.register({
+        	onCreate : function(req, transport, json){
+        		if (batriggered){
+        			batriggered = false;
+        			req.url += '?form_id=billing_address';
+        		} else if (satriggered) {
+        			satriggered = false;
+        			req.url += '?form_id=shipping_address';
+        		}
+        	},
+        	onComplete : function(req, res) {
+            	if (res.readyState == 4 && res.responseText.length > 0) {
+            		var response = $.parseJSON(res.responseText);
+            		if (response.hasOwnProperty('address_validator')) {
+            			var av = response.address_validator;
+            			if (!av.error) {
+            				var formId = av.form_id;
+            				validateAddress(formId, av.message, av.data);
+            			}
+            		}
+            	}                			
+        	}
+        });    	
+    };
+    
+    /**
      * select match
      * 
      * @param string form id
@@ -38,7 +165,7 @@ function AddressValidator($)
             //create list of address radio buttons
             var radios = '';
             $popup = getPopup();
-            $popup.find('h4').html(message);
+            $popup.find('.av-message').html(message);
             //show buttons we hid in editAddress
             $popup.find('.select').show();
             var $radios = $popup.find('ul.radios');
@@ -136,9 +263,9 @@ function AddressValidator($)
     {
         var form = $('#address-form').val();
         var formType;
-        if (form == 'co-billing-form') {
+        if (form == 'co-billing-form' || form == 'billing_address') {
             formType = 'billing';
-        } else if (form == 'co-shipping-form') {
+        } else if (form == 'co-shipping-form' || form == 'shipping_address') {
             formType = 'shipping';
         }    
 
@@ -155,6 +282,7 @@ function AddressValidator($)
         //deselect addressbook entry
         $('#' + formType + '-new-address-form').show();
         var customerAddressId = $('#' + formType + '-address-select').val();
+        var addressValidated = (customerAddressId) ? customerAddressId : 1;
         $('#' + formType + '-address-select').val(null);
 
         $('#' + formType + '\\:street1').val(address.street[0]);
@@ -173,16 +301,31 @@ function AddressValidator($)
         $('#' + formType + '\\:region').val(address.region);
         $('#' + formType + '\\:region_id').val(address.region_id);
         $('#' + formType + '\\:postcode').val(address.postcode);
-        $('#' + formType + '\\:country_id').val(address.country_id);
+        var $countryInput = $('#' + formType + '\\:country_id');
+        $countryInput.val(address.country_id);
 
         $('#' + formType + '\\:save_in_address_book').attr('checked',true);  
-        
-        var $addressValidated = $('#co-' + formType + '-form').find('.address-validated');
-        if ($addressValidated.length > 0) {
-            $addressValidated.val(customerAddressId);
-        } else {
-            $('#co-' + formType + '-form').append('<input type="hidden" class="address-validated" name="address_validated" value="'+customerAddressId+'" />');
-        }
+
+        var addressValidatedInput = '<input type="hidden" class="address-validated input-text" name="'+formType+'[address_validated]" value="'+addressValidated+'" />';
+    	var $form = $('#co-' + formType + '-form');
+    	if ($form.length>0){
+            var $addressValidated = $form.find('.address-validated');
+            if ($addressValidated.length > 0) {
+                $addressValidated.val(addressValidated);
+            } else {
+                $form.append(addressValidatedInput);
+
+            }
+    	} else {
+    		
+    		var $addressValidated = $countryInput.next();
+    		if ($addressValidated.length > 0 && $addressValidated.hasClass('address-validated')){
+                $addressValidated.val(addressValidated);
+    		} else {
+    			$countryInput.after(addressValidatedInput);
+    		}
+    		
+    	}
         
     };
 
@@ -208,93 +351,12 @@ function AddressValidator($)
             config = configObj;
             
             $(function () {
-
-                $('#co-billing-form input.input-text, #co-billing-form select, #co-shipping-form input.input-text, #co-shipping-form select').change(function (e) {
-                    $(this.form).find('.address-validated').val(0);
-                });
-
-                //close the popup and stay on the current step
-                $('#av-popup .back').click(function (e) {
-
-                    var form = $('#address-form').val();
-                    e.preventDefault();
-                    e.stopPropagation();
-                    //allow validation
-                    $('#' + form).find('.address-validated').val(0);
-                    $('#av-popup').hide();
-
-                });
-
-
-                //handle address selection
-                $('#av-popup .select').click(function (e) {
-
-                    e.preventDefault();
-                    e.stopPropagation();
-
-                    var $checkedRadio = $('#av-popup .radio:checked');
-                    var checked = ($checkedRadio.length > 0) ? true : false;
-
-                    if (checked) {
-
-                        var i = $checkedRadio.val();
-
-                        if (!isNaN(i)) {
-
-                            var formType = getFormType();
-
-                            i = parseInt(i);
-                            var address = results[i];
-
-                            //populate form
-                            if (address) {
-
-                                populate(formType, address);
-                            }
-
-                            $('#av-popup').hide();
-
-                            gotoNextStep();
-
-                        }
-                    }
-
-                });
-
-                //skip address validation and continue
-                $('#av-popup .skip').click(function (e) {
-
-                    e.preventDefault();
-                    e.stopPropagation();
-                    
-                    var form = $('#address-form').val();
-                    $('#' + form).append('<input type="hidden" class="skip-validation" name="skip_validation" value="1" />');
-
-                    gotoNextStep();
-
-                    $('#av-popup').hide();
-                });
-
-                //too many attempts redirect button
-                $('#av-popup .okay').click(function (e) {
-
-                    e.preventDefault();
-                    e.stopPropagation();
-
-                    var href = $(this).attr('href');
-
-                    if (href.indexOf('http') != -1) {
-
-                        window.location.href = href;
-                    } else {
-
-                        window.location.href = 'customer-service';
-                    }
-                });   
-                    
-
+            	
+            	initialize();
+            	if ($('#onestepcheckout-form').length > 0){
+                	initOneStepCheckout();
+            	}
             });   
-            
         },
         
         validateAddress : function(form, message, resultsJson)
