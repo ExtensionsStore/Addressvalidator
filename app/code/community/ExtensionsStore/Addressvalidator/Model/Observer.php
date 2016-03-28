@@ -26,10 +26,11 @@ class ExtensionsStore_Addressvalidator_Model_Observer extends Mage_Core_Model_Ab
         $store = Mage::app()->getStore();
         $storeId = $store->getId();
         $quote = Mage::getSingleton('checkout/session')->getQuote();
+        $formId = $request->getParam('form_id');
         
         if (strtolower($event->getName()) == 'controller_action_postdispatch_checkout_onepage_savebilling' ||
         		($event->getName() == 'controller_action_postdispatch_onestepcheckout_ajax_save_billing') && 
-        		$request->getParam('form_id') == 'billing_address') {
+        		$formId == 'billing_address') {
         
             $address = $quote->getBillingAddress();
         } else {
@@ -100,7 +101,10 @@ class ExtensionsStore_Addressvalidator_Model_Observer extends Mage_Core_Model_Ab
                 
                 $responseCode = ($helper->isDebug() && isset($returned['response_code']) && $returned['response_code']) ? ' (' . $returned['response_code'] . ')' : '';
                 $result = array();
-                $result['form_id'] = $request->getParam('form_id');
+                if (!$formId){
+                	$formId = 'co-'.$address->getAddressType().'-form';
+                }
+                $result['form_id'] = $formId;
                 $result['validate'] = true;
                 $result['error'] = false;
                 
