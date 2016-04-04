@@ -113,15 +113,30 @@ function AddressValidator($)
         $('#shipping_address .required-entry').change(function (e) {
             $('#shipping_address').find('.address-validated').val(0);
     	});
+        
+        var savingBilling, savingShipping = false;
     	
         Ajax.Responders.register({
         	onCreate : function(req, transport, json){
-        		if (batriggered){
-        			batriggered = false;
-        			req.url += '?form_id=billing_address';
-        		} else if (satriggered) {
-        			satriggered = false;
-        			req.url += '?form_id=shipping_address';
+        		if (batriggered || satriggered){
+            		if (batriggered){
+            			if (savingBilling){
+            				transport.abort();
+            				return;
+            			}
+            			batriggered = false;
+            			savingBilling = true;
+            			req.url += '?form_id=billing_address';
+            		} else if (satriggered) {
+            			if (savingShipping){
+            				transport.abort();
+            				return;            				
+            			}
+            			satriggered = false;
+            			savingShipping = true;
+            			req.url += '?form_id=shipping_address';
+            		}
+        			
         		}
         	},
         	onComplete : function(req, res) {
@@ -131,7 +146,14 @@ function AddressValidator($)
             			var av = response.address_validator;
             			if (!av.error) {
             				var formId = av.form_id;
-            				validateAddress(formId, av.message, av.data);
+            				if (savingBilling || savingShipping){
+                				validateAddress(formId, av.message, av.data);
+                				if (formId =='billing_address'){
+                					savingBilling = false;
+                				} else {
+                					savingShipping = false;
+                				}            					
+            				}
             			}
             		}
             	}                			
