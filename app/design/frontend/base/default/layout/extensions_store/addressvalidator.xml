@@ -13,34 +13,36 @@
     <checkout_onepage_index>
 	
         <reference name="head">
-            <action method="addCss">
+            <action method="addCss" ifconfig="extensions_store_addressvalidator/configuration/enabled">
                 <stylesheet>css/extensions_store/addressvalidator.css</stylesheet>
             </action>
-            <action method="addItem">
+            <action method="addItem" ifconfig="extensions_store_addressvalidator/configuration/enabled">
                 <type>skin_js</type>
                 <name>js/extensions_store/addressvalidator.js</name>
             </action>	            
         </reference>
 			
+        <block type="core/template" name="addressvalidator.popup" template ="extensions_store/addressvalidator/popup.phtml" />
         <reference name="before_body_end">
-            <block type="core/template" name="addressvalidator.popup" template ="extensions_store/addressvalidator/popup.phtml" />
+        	<action method="append" ifconfig="extensions_store_addressvalidator/configuration/enabled"><block>addressvalidator.popup</block></action>
         </reference>
         
     </checkout_onepage_index>
     
     <onestepcheckout_index_index>
         <reference name="head">
-            <action method="addCss">
+            <action method="addCss" ifconfig="extensions_store_addressvalidator/configuration/enabled">
                 <stylesheet>css/extensions_store/addressvalidator.css</stylesheet>
             </action>
-            <action method="addItem">
+            <action method="addItem" ifconfig="extensions_store_addressvalidator/configuration/enabled">
                 <type>skin_js</type>
                 <name>js/extensions_store/addressvalidator.js</name>
             </action>	            
         </reference>
 			
+        <block type="core/template" name="addressvalidator.popup" template ="extensions_store/addressvalidator/popup.phtml" />
         <reference name="before_body_end">
-            <block type="core/template" name="addressvalidator.popup" template ="extensions_store/addressvalidator/popup.phtml" />
+        	<action method="append" ifconfig="extensions_store_addressvalidator/configuration/enabled"><block>addressvalidator.popup</block></action>
         </reference>
     </onestepcheckout_index_index>    
 
