@@ -147,7 +147,15 @@ function AddressValidator($)
             			if (!av.error) {
             				var formId = av.form_id;
             				if (savingBilling || savingShipping){
-                				validateAddress(formId, av.message, av.data);
+            					if (!av.validate){
+            						var formType = (formId == 'billing_address') ? 'billing' : 'shipping';
+            			            results = JSON.parse(av.data);
+            			            if (results.length > 0){
+                						populate(formType,results[0]);
+            			            }
+            					} else {
+                    				validateAddress(formId, av.message, av.data);
+            					}
                 				if (formId =='billing_address'){
                 					savingBilling = false;
                 				} else {
@@ -356,11 +364,11 @@ function AddressValidator($)
      */
     var gotoNextStep = function ()
     {
-        var form = $('#address-form').val();
+        var formId = $('#address-form').val();
 
-        if (form == 'co-billing-form') {
+        if (formId == 'co-billing-form') {
             billing.save();
-        } else if (form == 'co-shipping-form') {
+        } else if (formId == 'co-shipping-form') {
             shipping.save();
         }
     };    
@@ -384,6 +392,19 @@ function AddressValidator($)
         validateAddress : function(form, message, resultsJson)
         {
             validateAddress(form, message, resultsJson);
+        },
+        
+        populate : function(formType, formId, data)
+        {
+        	if (typeof data == 'string'){
+        		data = JSON.parse(data);
+        	}
+        	if (data.length > 0){
+        		var address = data[0];
+                $('#address-form').val(formId);        		
+            	populate(formType, address);
+                gotoNextStep();
+        	}
         },
         
         editAddress : function(form, message)

@@ -23,20 +23,33 @@ if (window.shipping){
 	        
 	        var addressValidatorObj = response.address_validator;
 
-	        if (addressValidatorObj && addressValidatorObj.validate) {
-	            if (!addressValidatorObj.error) {
+	        if (addressValidatorObj) {
+	        	if (addressValidatorObj.hasOwnProperty('validate')){
+	        		
+	        		if (addressValidatorObj.validate === true){
+			            if (!addressValidatorObj.error) {
 
-	                if (typeof addressValidatorObj.data == 'string') {
-	                    addressValidator.validateAddress('co-billing-form', addressValidatorObj.message, addressValidatorObj.data);
-	                }
-	            } else {
-	                if (addressValidatorObj.data.indexOf('http') != -1) {
-	                    addressValidator.redirectSupport(addressValidatorObj.message, addressValidatorObj.data);
-	                } else {
-	                    addressValidator.editAddress('co-billing-form', addressValidatorObj.message);
-	                }
-	                return false;
-	            }
+			                if (typeof addressValidatorObj.data == 'string') {
+			                    addressValidator.validateAddress('co-billing-form', addressValidatorObj.message, addressValidatorObj.data);
+			                }
+			            } else {
+			                if (addressValidatorObj.data.indexOf('http') != -1) {
+			                    addressValidator.redirectSupport(addressValidatorObj.message, addressValidatorObj.data);
+			                } else {
+			                    addressValidator.editAddress('co-billing-form', addressValidatorObj.message);
+			                }
+			                return false;
+			            }	    	        			
+	        		} else {
+			            if (!addressValidatorObj.error) {
+
+			                if (typeof addressValidatorObj.data == 'string') {
+			                    addressValidator.populate('billing','co-billing-form', addressValidatorObj.data);
+			                }
+			            }	        			
+	        		}
+    		
+	        	} 
 	        }
 
 	        if (addressValidatorObj && addressValidatorObj.error) {
@@ -76,20 +89,33 @@ if (window.shipping){
 	        
 	        var addressValidatorObj = response.address_validator;
 
-	        if (addressValidatorObj && addressValidatorObj.validate) {
+	        if (addressValidatorObj) {
+	        	if (addressValidatorObj.hasOwnProperty('validate')){
+	        		
+	        		if (addressValidatorObj.validate === true){
+			            if (!addressValidatorObj.error) {
 
-	            if (!addressValidatorObj.error) {
-	                if (typeof addressValidatorObj.data == 'string') {
-	                    addressValidator.validateAddress('co-shipping-form', addressValidatorObj.message, addressValidatorObj.data);
-	                }
-	            } else {
-	                if (response.data.indexOf('http') != -1) {
-	                    addressValidator.redirectSupport(addressValidatorObj.message, addressValidatorObj.data);
-	                } else {
-	                    addressValidator.editAddress('co-shipping-form', addressValidatorObj.message);
-	                }
-	                return false;
-	            }
+			                if (typeof addressValidatorObj.data == 'string') {
+			                    addressValidator.validateAddress('co-shipping-form', addressValidatorObj.message, addressValidatorObj.data);
+			                }
+			            } else {
+			                if (addressValidatorObj.data.indexOf('http') != -1) {
+			                    addressValidator.redirectSupport(addressValidatorObj.message, addressValidatorObj.data);
+			                } else {
+			                    addressValidator.editAddress('co-shipping-form', addressValidatorObj.message);
+			                }
+			                return false;
+			            }	    	        			
+	        		} else {
+			            if (!addressValidatorObj.error) {
+
+			                if (typeof addressValidatorObj.data == 'string') {
+			                    addressValidator.populate('shipping','co-shipping-form', addressValidatorObj.data);
+			                }
+			            }	        			
+	        		}
+    		
+	        	} 
 	        }
 
 	        if (addressValidatorObj && addressValidatorObj.error) {
