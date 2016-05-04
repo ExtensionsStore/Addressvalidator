@@ -92,7 +92,8 @@ abstract class ExtensionsStore_Addressvalidator_Model_Service_Abstract extends M
                     if (isset($processedResponse['response_code']) && $processedResponse['response_code']) {
                         $responseCode = $processedResponse['response_code'];
                         $return['response_code'] = $responseCode;
-                        $this->_write->query("UPDATE $table SET response_code = '$responseCode' WHERE hash = '{$this->_hash}'");
+                        $values = array( 'responsecode' => $responseCode, 'hash' => $this->_hash );
+                        $this->_write->query("UPDATE $table SET response_code = :responsecode WHERE hash = :hash", $values);
                     }
 
                     $resultsData = $processedResponse['data']; //empty if invalid address
@@ -166,7 +167,6 @@ abstract class ExtensionsStore_Addressvalidator_Model_Service_Abstract extends M
 
             $ch = curl_init();
             //log curl errors
-            $f = fopen('var/log/extensions_store_addressvalidator.log', 'w');
 
             curl_setopt($ch, CURLOPT_URL, $this->_url);
             $headers = array(
@@ -185,7 +185,6 @@ abstract class ExtensionsStore_Addressvalidator_Model_Service_Abstract extends M
             curl_setopt($ch, CURLOPT_RETURNTRANSFER, true);
 
             $response = curl_exec($ch);
-            fclose($f);
             curl_close($ch);
 
             if ($response) {
@@ -206,13 +205,23 @@ abstract class ExtensionsStore_Addressvalidator_Model_Service_Abstract extends M
                     "country_id" => $country_id,
                     "telephone" => $telephone,
                 );
-
                 $service = $this->_service;
                 $addressFields = implode(',', array_keys($address));
-                $addressValues = implode("','", $address);
+                //$addressValues = implode("','", $address);
+                $addressValues = array();
+                foreach( $address as $key => &$value ) {
+                	$addressValues[] = ':' . $key;
+                	if( $value === null )
+                		$value = '';
+                }
+                $addressValues	= implode(",", $addressValues);
                 $dateCreated = date('Y-m-d H:i:s');
                 $storeId = Mage::app()->getStore()->getId();
-                $this->_write->query("REPLACE INTO $table (hash, response, service, $addressFields, store_id, date_created) VALUES('$hash', COMPRESS('$response'), '$service', '$addressValues', '$storeId', '$dateCreated')");
+                
+                $values = array( 'hash' => $hash, 'response' => $response, 'service' => $service, 'storeId' => $storeId, 'dateCreated' => $dateCreated );
+                $values	= array_merge( $values, $address );
+                
+                $this->_write->query("REPLACE INTO $table (hash, response, service, $addressFields, store_id, date_created) VALUES(:hash, COMPRESS(:response), :service, $addressValues, :storeId, :dateCreated)", $values );
             }
         }
 
