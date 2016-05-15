@@ -43,4 +43,7 @@ $coreResource = $this->getTable('core_resource');
 $sql = "DELETE FROM {$coreResource} WHERE code = 'aydus_addressvalidator_setup' AND version ='1.4.3' AND data_version = '1.4.3'";
 $this->run($sql);
 
+$coreConfigData = $this->getTable('core_config_data');
+$sql = "UPDATE $coreConfigData SET path = REPLACE(path, 'aydus', 'extensions_store') WHERE path like 'aydus_addressvalidator%'";
+
 $this->endSetup();
