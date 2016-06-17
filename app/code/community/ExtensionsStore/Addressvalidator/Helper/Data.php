@@ -36,7 +36,7 @@ class ExtensionsStore_Addressvalidator_Helper_Data extends Mage_Core_Helper_Abst
 
         $debug = (preg_match('/trunk|local|stage/', $httpHost)) ? true : false;
 
-        return false;//$debug;
+        return $debug;
     }
 
     /**
