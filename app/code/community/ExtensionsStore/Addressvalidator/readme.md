@@ -2,4 +2,4 @@ Address Validator
 =================
 Validate billing and shipping addresses in the One Page Checkout. 
 
-https://github.com/extensions_store/Addressvalidator
+https://github.com/ExtensionsStore/Addressvalidator
