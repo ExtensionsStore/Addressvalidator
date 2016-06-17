@@ -71,16 +71,27 @@ class ExtensionsStore_Addressvalidator_Model_Observer extends Mage_Core_Model_Ab
         }        
 
         if ($helper->tooManyAttempts()) {
-
-            $result = array();
-            $result['validate'] = true;
-            $result['error'] = true;
-            $tooManyAttemptsUrl = Mage::getStoreConfig('extensions_store_addressvalidator/configuration/too_many_attempts_url',$storeId);
-            $result['data'] = Mage::getUrl($tooManyAttemptsUrl);
-            $result['message'] = $helper->getMessaging('too_many_attempts');
-
-            $response->setBody(Mage::helper('core')->jsonEncode($result));
-            return $this;
+        	
+        	$allowBypass = (int)Mage::getStoreConfig('extensions_store_addressvalidator/configuration/allow_bypass', $storeId);
+            
+            if ($allowBypass){
+            	$result = array();
+            	$result['validate'] = true;
+            	$result['error'] = true;
+            	$tooManyAttemptsUrl = Mage::getStoreConfig('extensions_store_addressvalidator/configuration/too_many_attempts_url',$storeId);
+            	$result['data'] = Mage::getUrl($tooManyAttemptsUrl);
+            	$result['message'] = $helper->getMessaging('too_many_attempts');
+            	
+            	$body = $response->getBody();
+            	$responseBody = json_decode($body, true);
+            	$responseBody = (is_array($responseBody)) ? $responseBody : array();
+            	unset($responseBody['goto_section']);
+            	$responseBody['address_validator'] = $result;
+            	 
+            	$response->setBody(Mage::helper('core')->jsonEncode($responseBody));
+            }
+            
+            return $observer;
         }
 
         $validateStore = $helper->validateStore($store);

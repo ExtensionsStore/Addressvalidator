@@ -71,6 +71,11 @@
             <extensions_store_addressvalidator>
                 <class>ExtensionsStore_Addressvalidator_Block</class>
             </extensions_store_addressvalidator>
+            <checkout>
+            	<rewrite>
+            		<onepage_billing>ExtensionsStore_Addressvalidator_Block_Checkout_Onepage_Billing</onepage_billing>
+            	</rewrite>
+            </checkout>
         </blocks>
         <models>
             <extensions_store_addressvalidator>

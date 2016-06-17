@@ -47,7 +47,6 @@ $customerServiceUrl = $this->getUrl($tooManyAttemptsUrl);
 
 
 
-<script src="<?php echo $this->getSkinUrl('js/extensions_store/addressvalidator/address.js') ?>"></script>
 <script>
     addressValidator.init({
         auto_populate: <?php echo (Mage::getStoreConfig('extensions_store_addressvalidator/configuration/auto_populate')) ? 'true' : 'false' ?>,

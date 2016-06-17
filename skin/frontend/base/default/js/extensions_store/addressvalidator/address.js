@@ -6,7 +6,7 @@
  * @author     Extensions Store <admin@extensions-store.com>
  */
 
-if (window.shipping){
+if (Billing){
 	
 	//replace the nextStep method in the Billing prototype
 	var replaceBillingNextStepObj = {
@@ -27,43 +27,24 @@ if (window.shipping){
 	        	if (addressValidatorObj.hasOwnProperty('validate')){
 	        		
 	        		if (addressValidatorObj.validate === true){
-			            if (!addressValidatorObj.error) {
-
-			                if (typeof addressValidatorObj.data == 'string') {
-			                    addressValidator.validateAddress('co-billing-form', addressValidatorObj.message, addressValidatorObj.data);
-			                }
-			            } else {
+	        			
+	        			if (addressValidatorObj.error === false){
+		                    addressValidator.validateAddress('co-billing-form', addressValidatorObj.message, addressValidatorObj.data);
+	        				
+	        			} else {
 			                if (addressValidatorObj.data.indexOf('http') != -1) {
 			                    addressValidator.redirectSupport(addressValidatorObj.message, addressValidatorObj.data);
 			                } else {
 			                    addressValidator.editAddress('co-billing-form', addressValidatorObj.message);
 			                }
-			                return false;
-			            }	    	        			
-	        		} else {
-			            if (!addressValidatorObj.error) {
-
-			                if (typeof addressValidatorObj.data == 'string') {
-			                    addressValidator.populate('billing','co-billing-form', addressValidatorObj.data);
-			                }
-			            }	        			
+			                return false;	        				
+	        			}
+	                    
+	        		} else if (addressValidatorObj.error === false) {
+	        			addressValidator.populate('billing','co-billing-form', addressValidatorObj.data);
 	        		}
     		
 	        	} 
-	        }
-
-	        if (addressValidatorObj && addressValidatorObj.error) {
-	            if ((typeof addressValidatorObj.message) == 'string') {
-	                alert(addressValidatorObj.message);
-	            } else {
-	                if (window.billingRegionUpdater) {
-	                    billingRegionUpdater.update();
-	                }
-
-	                alert(addressValidatorObj.message.join("\n"));
-	            }
-
-	            return false;
 	        }
 
 	        checkout.setStepResponse(response);
@@ -72,8 +53,12 @@ if (window.shipping){
 	    }
 
 	};
-	
+
 	Billing.addMethods(replaceBillingNextStepObj);
+}
+
+if (Shipping){
+	
 	//replace the nextStep method in the Shipping prototype
 	var replaceShippingNextStepObj = {
 	    nextStep: function (transport) {
@@ -93,42 +78,24 @@ if (window.shipping){
 	        	if (addressValidatorObj.hasOwnProperty('validate')){
 	        		
 	        		if (addressValidatorObj.validate === true){
-			            if (!addressValidatorObj.error) {
-
-			                if (typeof addressValidatorObj.data == 'string') {
-			                    addressValidator.validateAddress('co-shipping-form', addressValidatorObj.message, addressValidatorObj.data);
-			                }
-			            } else {
+	        			
+	        			if (addressValidatorObj.error === false){
+		                    addressValidator.validateAddress('co-shipping-form', addressValidatorObj.message, addressValidatorObj.data);
+	        				
+	        			} else {
 			                if (addressValidatorObj.data.indexOf('http') != -1) {
 			                    addressValidator.redirectSupport(addressValidatorObj.message, addressValidatorObj.data);
 			                } else {
 			                    addressValidator.editAddress('co-shipping-form', addressValidatorObj.message);
 			                }
-			                return false;
-			            }	    	        			
-	        		} else {
-			            if (!addressValidatorObj.error) {
-
-			                if (typeof addressValidatorObj.data == 'string') {
-			                    addressValidator.populate('shipping','co-shipping-form', addressValidatorObj.data);
-			                }
-			            }	        			
+			                return false;	        				
+	        			}
+	                    
+	        		} else if (addressValidatorObj.error === false) {
+	        			addressValidator.populate('shipping','co-shipping-form', addressValidatorObj.data);
 	        		}
     		
 	        	} 
-	        }
-
-	        if (addressValidatorObj && addressValidatorObj.error) {
-	            if ((typeof addressValidatorObj.message) == 'string') {
-	                alert(addressValidatorObj.message);
-	            } else {
-	                if (window.shippingRegionUpdater) {
-	                    shippingRegionUpdater.update();
-	                }
-	                alert(addressValidatorObj.message.join("\n"));
-	            }
-
-	            return false;
 	        }
 
 	        checkout.setStepResponse(response);

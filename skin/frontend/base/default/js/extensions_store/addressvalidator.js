@@ -267,7 +267,7 @@ function AddressValidator($)
     var redirectSupport = function (message, url)
     {
         $popup = getPopup();
-        $popup.find('h4').html(message);
+        $popup.find('.av-message').html(message);
         //hide all buttons except ok
         $popup.find('.back, .select, .skip').hide();
         $popup.find('.okay').attr('href', url).show();
