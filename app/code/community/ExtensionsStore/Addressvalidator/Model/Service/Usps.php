@@ -78,7 +78,7 @@ class ExtensionsStore_Addressvalidator_Model_Service_Usps extends ExtensionsStor
         $return = array();
         $return['error'] = true;
 
-        $responseJson = Mage::helper('addressvalidator')->xmlToObject($response);
+        $responseJson = Mage::helper('addressvalidator')->xmlToObject($response, false);
 
         $address = @$responseJson->Address;
         $error = (@$address->Error) ? true : false;

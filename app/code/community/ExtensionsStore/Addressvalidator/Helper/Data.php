@@ -152,12 +152,15 @@ class ExtensionsStore_Addressvalidator_Helper_Data extends Mage_Core_Helper_Abst
      * Create object from XML
      * 
      * @param string $xmlString
+     * @param bool $replaceNamespaces
      * @return stdClass
      */
-    public function xmlToObject($xmlString) {
-        //replace namespaces
-        $xmlString = preg_replace('/xmlns[^=]*="[^"]*"\s*/i', '', $xmlString);
-        $xmlString = preg_replace("/(<\/?)([^:]+):([^>]*>)/", "$1$3", $xmlString);
+    public function xmlToObject($xmlString, $replaceNamespaces=true) {
+    	if ($replaceNamespaces){
+	        //replace namespaces
+	        $xmlString = preg_replace('/xmlns[^=]*="[^"]*"\s*/i', '', $xmlString);
+	        $xmlString = preg_replace("/(<\/?)([^:]+):([^>]*>)/", "$1$3", $xmlString);
+    	}
 
         $xml = simplexml_load_string($xmlString);
         $xmlJsonStr = json_encode($xml);
