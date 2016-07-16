@@ -52,13 +52,13 @@ class ExtensionsStore_Addressvalidator_Model_Service_Usps extends ExtensionsStor
         $xml = '<?xml version="1.0" encoding="UTF-8"?>
 <AddressValidateRequest USERID="'.$userId.'">
   <Address>  
-    <FirmName>'.$company.'</FirmName>   
-    <Address1>'.$street2.'</Address1> 
-    <Address2>'.$street1.'</Address2>   
-    <City>'.$city.'</City>   
-    <State>'.$state.'</State>   
-    <Zip5>'.$zip5.'</Zip5>   
-    <Zip4>'.$zip4.'</Zip4> 
+    <FirmName><![CDATA['.$company.']]></FirmName>   
+    <Address1><![CDATA['.$street2.']]></Address1> 
+    <Address2><![CDATA['.$street1.']]></Address2>   
+    <City><![CDATA['.$city.']]></City>   
+    <State><![CDATA['.$state.']]></State>   
+    <Zip5><![CDATA['.$zip5.']]></Zip5>   
+    <Zip4><![CDATA['.$zip4.']]></Zip4> 
   </Address>      
 </AddressValidateRequest>';
         
@@ -76,22 +76,36 @@ class ExtensionsStore_Addressvalidator_Model_Service_Usps extends ExtensionsStor
      */
     protected function _processResponse($response) {
         $return = array();
-        $return['error'] = true;
+        $return['error'] = false;
 
         $responseJson = Mage::helper('addressvalidator')->xmlToObject($response, false);
 
         $address = @$responseJson->Address;
-        $error = (@$address->Error) ? true : false;
+        $error = (@$address->Error || @$address->ReturnText) ? true : false;
 
         if (!$error) {
 
-            $return['error'] = false;
             $return['data'] = (!is_array($address)) ? array($address) : $address;
 
+        } else if (@$address->ReturnText){
+        	
+        	if (preg_match('/apartment/',$address->ReturnText)){
+        		
+        		if (isset($this->_requestData['street2']) && strlen($this->_requestData['street2'])>0){
+        			$data = Mage::helper('addressvalidator')->getMessaging('apartment_not_found');
+        		} else {
+        			$data = Mage::helper('addressvalidator')->getMessaging('apartment_required');
+        		}
+        		
+        		$return['data'] = ($data) ? $data : $address->ReturnText;
+        		
+        	}else {
+        		$return['data'] = $address->ReturnText;
+        	}
         } else {
 
-            Mage::log($address->Error->Number . '-' . $address->Error->Description, null, 'extensions_store_addressvalidator.log');
-            $return['error'] = false;
+        	$return['error'] = true;
+        	Mage::log($address->Error->Number . '-' . $address->Error->Description, null, 'extensions_store_addressvalidator.log');
             $return['data'] = $address->Error->Description;
         }
 

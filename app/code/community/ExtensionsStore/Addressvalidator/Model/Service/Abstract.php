@@ -85,7 +85,7 @@ abstract class ExtensionsStore_Addressvalidator_Model_Service_Abstract extends M
                 //process response, extracting results
                 $processedResponse = $this->_processResponse($response);
 
-                if (!$processedResponse['error']) {
+                if (!$processedResponse['error']) { //means internal error
 
                     $return['error'] = false;
 
@@ -111,9 +111,13 @@ abstract class ExtensionsStore_Addressvalidator_Model_Service_Abstract extends M
 
                             $return['data'] = self::NO_RESULTS;
                         }
-                    } else {
+                    } else if (is_string($resultsData)) {
 
-                        $return['data'] = self::INVALID_ADDRESS;
+                        $return['data'] = $resultsData;
+                        
+                    } else {
+                    	
+                    	$return['data'] = self::INVALID_ADDRESS;
                     }
                 } else {
 
@@ -166,7 +170,6 @@ abstract class ExtensionsStore_Addressvalidator_Model_Service_Abstract extends M
         if (!$response) {
 
             $ch = curl_init();
-            //log curl errors
 
             curl_setopt($ch, CURLOPT_URL, $this->_url);
             $headers = array(
@@ -222,7 +225,10 @@ abstract class ExtensionsStore_Addressvalidator_Model_Service_Abstract extends M
                 $values	= array_merge( $values, $address );
                 
                 $this->_write->query("REPLACE INTO $table (hash, response, service, $addressFields, store_id, date_created) VALUES(:hash, COMPRESS(:response), :service, $addressValues, :storeId, :dateCreated)", $values );
-            }
+	        } else {
+        		$errorMessage = curl_error($ch);
+        		Mage::log($errorMessage, Zend_log::ERR, 'extensions_store_addressvalidator.log');
+        	}
         }
 
         return $response;

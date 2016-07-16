@@ -251,7 +251,7 @@ function AddressValidator($)
             //get the popup
             $popup = getPopup();
             //append message
-            $popup.find('h4').html(message);
+            $popup.find('.av-message').html(message);
             //hide the select button (nothing to select) and skip button (per JM)
             $popup.find('.select, .okay').hide();
             //show popup
@@ -315,10 +315,18 @@ function AddressValidator($)
         var addressValidated = (customerAddressId) ? customerAddressId : 1;
         $('#' + formType + '-address-select').val(null);
 
-        $('#' + formType + '\\:street1').val(address.street[0]);
+        var originalStreet1 = $('#' + formType + '\\:street1').val();
+        var street1 = address.street[0];
+        $('#' + formType + '\\:street1').val(street1);
 
         if (typeof address.street[1] != 'undefined') {
             $('#' + formType + '\\:street2').val(address.street[1]);
+        } else {
+        	var originalStreet2 = $('#' + formType + '\\:street2').val();
+        	//remove line 2 if apt number added to line 1
+        	if (originalStreet2 && originalStreet1.toUpperCase().indexOf(' APT ') < 0 && street1.toUpperCase().indexOf(' APT ') >= 0){
+                $('#' + formType + '\\:street2').val('');
+        	}
         }
         if (typeof address.street[2] != 'undefined') {
             var street2 = $('#' + formType + '\\:street2').val();

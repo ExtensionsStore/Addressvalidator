@@ -20,6 +20,9 @@ class ExtensionsStore_Addressvalidator_Model_Service_Fedex extends ExtensionsSto
     public function _construct() {
         parent::_construct();
 
+        if (Mage::getStoreConfig('carriers/fedex/sandbox_mode', Mage::app()->getStore()->getId())){
+        	$this->_url = 'https://wsbeta.fedex.com:443/web-services';
+        }
     }
 
     /**
@@ -72,12 +75,14 @@ class ExtensionsStore_Addressvalidator_Model_Service_Fedex extends ExtensionsSto
         </ns1:Options>
         <ns1:AddressesToValidate>
             <ns1:AddressId>1</ns1:AddressId>
-            <ns1:Address>
-                <ns1:StreetLines>'.$street1.'</ns1:StreetLines>
-                <ns1:City>'.$city.'</ns1:City>
-                <ns1:StateOrProvinceCode>'.$state.'</ns1:StateOrProvinceCode>
-                <ns1:PostalCode>'.$postcode.'</ns1:PostalCode>
-                <ns1:CountryCode>'.$countryId.'</ns1:CountryCode>
+            <ns1:CompanyName><![CDATA['.@$company.']]></ns1:CompanyName>
+        	<ns1:Address>
+        		<ns1:StreetLines><![CDATA['.$street1.']]></ns1:StreetLines>
+                <ns1:StreetLines><![CDATA['.@$street2.']]></ns1:StreetLines>
+                <ns1:City><![CDATA['.$city.']]></ns1:City>
+                <ns1:StateOrProvinceCode><![CDATA['.$state.']]></ns1:StateOrProvinceCode>
+                <ns1:PostalCode><![CDATA['.$postcode.']]></ns1:PostalCode>
+                <ns1:CountryCode><![CDATA['.$countryId.']]></ns1:CountryCode>
             </ns1:Address>
         </ns1:AddressesToValidate>
     </ns1:AddressValidationRequest>
@@ -109,11 +114,37 @@ class ExtensionsStore_Addressvalidator_Model_Service_Fedex extends ExtensionsSto
 
         if ($highestSeverity == 'SUCCESS') {
             
-            $addresses = $addressValidationReply->AddressResults;
-            $addresses = (!is_array($addresses)) ? array($addresses) : $addresses;
+            $addressResults = $addressValidationReply->AddressResults;
+            $proposedAddressDetails = @$addressResults->ProposedAddressDetails;
+            $deliveryPointValidation = @$proposedAddressDetails->DeliveryPointValidation;
+            
+            if ($deliveryPointValidation && $deliveryPointValidation == 'UNCONFIRMED'){
+            	
+            	$changes = $proposedAddressDetails->Changes;
+            	$apartmentNumberRequired = false;
+            	$apartmentNumberNotFound = false;
+            	if (is_array($changes) && count($changes)>0){
+            		foreach ($changes as $change){
+            			if ($change == 'APARTMENT_NUMBER_REQUIRED'){
+            				$apartmentNumberRequired = true;
+            				break;
+            			}
+            			if ($change == 'APARTMENT_NUMBER_NOT_FOUND'){
+            				$apartmentNumberNotFound = true;
+            				break;
+            			}
+            		}
+            	}
+            	
+            	$data = ($apartmentNumberRequired) ? Mage::helper('addressvalidator')->getMessaging('apartment_required') : $change;
+            	$data = ($apartmentNumberNotFound) ? Mage::helper('addressvalidator')->getMessaging('apartment_not_found') : $data;
+            	 
+            } else {
+            	$data = (!is_array($addressResults)) ? array($addressResults) : $addressResults;
+            }
 
             $return['error'] = false;
-            $return['data'] = $addresses;
+            $return['data'] = $data;
 
         } else {
 
@@ -143,15 +174,16 @@ class ExtensionsStore_Addressvalidator_Model_Service_Fedex extends ExtensionsSto
                 
                 $proposedAddressDetails = @$result->ProposedAddressDetails;
                 $score = (int)@$proposedAddressDetails->Score;
+                $deliveryPointValidation = @$proposedAddressDetails->DeliveryPointValidation;
                 
-                if ($score > 50){
+                if ($score > 50 && $deliveryPointValidation == 'CONFIRMED'){
                     
                     $addressData = @$proposedAddressDetails->Address;
                     
                     $countryId = $addressData->CountryCode;
                     $country = $addressData->CountryCode;
                     $street = array($addressData->StreetLines);
-                    $city = $addressData->v2City;
+                    $city = ($addressData->v2City) ? $addressData->v2City : $addressData->City;
                     $regionModel = Mage::getModel('directory/region');
                     $regionModel->loadByCode($addressData->StateOrProvinceCode, $countryId);
                     $regionName = $regionModel->getName();

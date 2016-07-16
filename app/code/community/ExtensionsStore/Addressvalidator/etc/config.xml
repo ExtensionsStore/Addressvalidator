@@ -11,7 +11,7 @@
 <config>
     <modules>
         <ExtensionsStore_Addressvalidator>
-            <version>1.5.0</version>
+            <version>1.5.2</version>
         </ExtensionsStore_Addressvalidator>
     </modules>
     <phpunit>
@@ -125,6 +125,8 @@
                 <too_many_attempts><![CDATA[We're sorry, but we are unable to verify your address after several attempts. Please contact Customer Service.]]></too_many_attempts>
                 <matches_available><![CDATA[Address Verification: Please click a verified address below, or click Back to edit your information.]]></matches_available>
                 <invalid_address><![CDATA[Address Verification: No match found; please click Back to edit your information.]]></invalid_address>
+                <apartment_required><![CDATA[Apartment, room, box or suite number is required. Please enter on Address Line 2.]]></apartment_required>
+                <apartment_not_found><![CDATA[Please enter a valid apartment, room, box or suite number on Address Line 2.]]></apartment_not_found>
             </messaging>
             <usps>
                 <gateway_url><![CDATA[http://production.shippingapis.com/ShippingAPI.dll]]></gateway_url>

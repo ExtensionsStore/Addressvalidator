@@ -45,7 +45,7 @@ class ExtensionsStore_Addressvalidator_Model_Observer extends Mage_Core_Model_Ab
         } else {
             $postData = $request->getParam('shipping');
         }        
-        $addressValidated = $postData['address_validated'];
+        $addressValidated = @$postData['address_validated'];
         if ($addressValidated) {
             $postData['customer_address_id'] = $addressValidated;
             $helper->setAddressData($address, $postData, true);
@@ -99,56 +99,66 @@ class ExtensionsStore_Addressvalidator_Model_Observer extends Mage_Core_Model_Ab
         if ($validateStore) {
             
             $international = ($address->getCountryId() && Mage::getStoreConfig('general/country/default') != $address->getCountryId()) ? true : false;
-            $service = $helper->getService($storeId, $international);
-            $returned = array('error' => true);
+            $services = $helper->getServices($storeId, $international);
+            $returns = array();
 
             try {
-                $returned = $service->getResults($address);
+            	foreach ($services as $key=>$service){
+            		$returns[$key] = $service->getResults($address);
+            	}
             } catch (Exception $e) {
-                $returned['data'] = $e->getMessage();
                 Mage::log($e->getMessage(), null, 'extensions_store_addressvalidator.log');
             }
+            
+            if (count($returns)>0){
+            	
+            	$returned = $returns['service'];
+            	$returned2 = (isset($returns['service2'])) ? $returns['service2'] : array('error' => true);
+            	
+            	$result = array();
+            	if (!$formId){
+            		$formId = 'co-'.$address->getAddressType().'-form';
+            	}
+            	$result['form_id'] = $formId;
+            	$result['validate'] = true;
+            	$result['error'] = $returned['error'];
+            	$responseCode = ($helper->isDebug() && isset($returned['response_code']) && $returned['response_code']) ? ' (' . $returned['response_code'] . ')' : '';
+            	
+            	if (is_array($returned['data']) && count($returned['data']) > 0) {
 
-            if ($returned['error'] === false) {
-                
-                $responseCode = ($helper->isDebug() && isset($returned['response_code']) && $returned['response_code']) ? ' (' . $returned['response_code'] . ')' : '';
-                $result = array();
-                if (!$formId){
-                	$formId = 'co-'.$address->getAddressType().'-form';
-                }
-                $result['form_id'] = $formId;
-                $result['validate'] = true;
-                $result['error'] = false;
-                
-                if (is_array($returned['data']) && count($returned['data']) > 0) {
-                    
-                    $result['data'] = json_encode($returned['data']);
-                    $result['message'] = $helper->getMessaging('matches_available') . $responseCode;
-                    
-                    $autoPopulate = (int)Mage::getStoreConfig('extensions_store_addressvalidator/configuration/auto_populate', $storeId);
-                    
-                    if ($autoPopulate){
-                        $helper->setAddressData($address, $returned['data'][0], true);
-                		$result['validate'] = false;
-                    }
-                    
-                } else {
-
-                    $result['error'] = true;
-                    $result['data'] = $returned['data'];
-                    $result['message'] = $helper->getMessaging('invalid_address') . $responseCode;
-                }
-                
-                $body = $response->getBody();
-                $responseBody = json_decode($body, true);
-                $responseBody = (is_array($responseBody)) ? $responseBody : array();
-                unset($responseBody['goto_section']);
-                $responseBody['address_validator'] = $result;
-                	
-                $response->setBody(Mage::helper('core')->jsonEncode($responseBody));
-                
-                $observer->setResult($result);
+            		if ($returned2['error'] === false && is_array($returned2['data']) && count($returned2['data']) > 0 && $returned['data'] != $returned2['data']){
+            			$returned['data'] = array_merge($returned['data'], $returned2['data']);
+            		}
+            		
+            		$result['data'] = json_encode($returned['data']);
+            		$result['message'] = $helper->getMessaging('matches_available') . $responseCode;
+            	
+            		$autoPopulate = (int)Mage::getStoreConfig('extensions_store_addressvalidator/configuration/auto_populate', $storeId);
+            	
+            		if ($autoPopulate){
+            			$helper->setAddressData($address, $returned['data'][0], true);
+            			$result['validate'] = false;
+            		}
+            	
+            	} else {
+            	
+            		$result['error'] = true;
+            		$result['data'] = $returned['data'];
+            		$result['message'] = (($returned['data']) ? $returned['data'] : $helper->getMessaging('invalid_address')) . $responseCode;
+            	}
+            	
+            	$body = $response->getBody();
+            	$responseBody = json_decode($body, true);
+            	$responseBody = (is_array($responseBody)) ? $responseBody : array();
+            	unset($responseBody['goto_section']);
+            	$responseBody['address_validator'] = $result;
+            	 
+            	$response->setBody(Mage::helper('core')->jsonEncode($responseBody));
+            	 
+            	$observer->setResult($result);
+            	
             }
+
         }
 
         return $observer;

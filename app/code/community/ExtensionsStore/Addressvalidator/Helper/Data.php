@@ -91,17 +91,24 @@ class ExtensionsStore_Addressvalidator_Helper_Data extends Mage_Core_Helper_Abst
      * 
      * @param int $storeId
      * @param bool $international
-     * @return ExtensionsStore_Addressvalidator_Model_Service_Abstract
+     * @return array
      */
-    public function getService($storeId, $international=false) {
+    public function getServices($storeId, $international=false) {
         
-        $service = ($international) ? 'service_international' : 'service';
+        $services = array();
+    	$service = ($international) ? 'service_international' : 'service';
         $configService = Mage::getStoreConfig('extensions_store_addressvalidator/configuration/'.$service, $storeId);
         $configService = ($configService) ? $configService : 'usps'; 
         $alias = 'extensions_store_addressvalidator/service_' . $configService;
-        $serviceModel = Mage::getModel($alias);
+        $services['service'] = Mage::getModel($alias);
+        
+        if (Mage::getStoreConfig('extensions_store_addressvalidator/configuration/service2', $storeId)){
+        	$configService2 = Mage::getStoreConfig('extensions_store_addressvalidator/configuration/service2', $storeId);
+        	$alias = 'extensions_store_addressvalidator/service_' . $configService2;
+        	$services['service2'] = Mage::getModel($alias);        	
+        }
 
-        return $serviceModel;
+        return $services;
     }
 
     /**
@@ -178,7 +185,7 @@ class ExtensionsStore_Addressvalidator_Helper_Data extends Mage_Core_Helper_Abst
         $storeId = Mage::app()->getStore()->getId();
         
         $international = ($address->getCountryId() && Mage::getStoreConfig('general/country/default') != $address->getCountryId()) ? true : false;
-        $service = $this->getService($storeId, $international);
+        $service = $this->getServices($storeId, $international);
         
         $return = array('error' => true);
         
