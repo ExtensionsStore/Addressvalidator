@@ -133,7 +133,7 @@ class ExtensionsStore_Addressvalidator_Model_Service_Ups extends ExtensionsStore
 
                 $countryId = $addressData->CountryCode;
                 $country = $addressData->CountryCode;
-                $street = array($addressData->AddressLine);
+                $street = (!is_array($addressData->AddressLine)) ? array($addressData->AddressLine) : $addressData->AddressLine;
                 $city = $addressData->PoliticalDivision2;
                 $regionModel = Mage::getModel('directory/region');
                 $regionModel->loadByCode($addressData->PoliticalDivision1, $countryId);
