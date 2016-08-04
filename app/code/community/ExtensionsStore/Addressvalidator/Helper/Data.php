@@ -38,6 +38,15 @@ class ExtensionsStore_Addressvalidator_Helper_Data extends Mage_Core_Helper_Abst
 
         return $debug;
     }
+    
+    /**
+     * @return boolean
+     */
+    public function enabled(){
+    	$storeId = Mage::app()->getStore()->getId();
+    	$enabled = (bool) Mage::getStoreConfig('extensions_store_addressvalidator/configuration/enabled', $storeId);
+    	return $enabled;
+    }
 
     /**
      * Validate billing/shipping address on checkout

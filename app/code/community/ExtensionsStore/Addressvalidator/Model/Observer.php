@@ -19,6 +19,9 @@ class ExtensionsStore_Addressvalidator_Model_Observer extends Mage_Core_Model_Ab
     public function validateAddress($observer) {
         
         $helper = Mage::helper('addressvalidator');
+        if (!$helper->enabled()){
+        	return $observer;
+        }
         $request = Mage::app()->getRequest();
         $event = $observer->getEvent();
         $controller = $event->getControllerAction();
@@ -39,12 +42,22 @@ class ExtensionsStore_Addressvalidator_Model_Observer extends Mage_Core_Model_Ab
             $address = $quote->getShippingAddress();
         }
         
-        //save validated address
+        //get address data
         if ($address->getAddressType()=='billing'){
         	$postData = $request->getParam('billing');
         } else {
             $postData = $request->getParam('shipping');
         }        
+        
+        //validate country
+        $countryId = @$postData['country_id'];
+        $countries = Mage::getStoreConfig('extensions_store_addressvalidator/configuration/countries',$storeId);
+        $countries = explode(',',$countries);
+        if (!in_array($countryId, $countries)){
+        	return $observer;
+        }
+        
+        //already validated
         $addressValidated = @$postData['address_validated'];
         if ($addressValidated) {
             $postData['customer_address_id'] = $addressValidated;

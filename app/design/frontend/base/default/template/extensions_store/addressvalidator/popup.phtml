@@ -1,55 +1,49 @@
 <?php
 /**
- * Address Validator select
+ * Address Validator popup
  *
  * @category   ExtensionsStore
  * @package    ExtensionsStore_Addressvalidator
  * @author     Extensions Store <admin@extensions-store.com>
  */
 
-$storeId = Mage::app()->getStore()->getId();
-$tooManyAttemptsUrl = Mage::getStoreConfig('extensions_store_addressvalidator/configuration/too_many_attempts_url',$storeId);
-$customerServiceUrl = $this->getUrl($tooManyAttemptsUrl);
+$helper = $this->helper('addressvalidator');
+if ($helper->enabled()){
+	$storeId = Mage::app()->getStore()->getId();
+	$tooManyAttemptsUrl = Mage::getStoreConfig('extensions_store_addressvalidator/configuration/too_many_attempts_url',$storeId);
+	$customerServiceUrl = $this->getUrl($tooManyAttemptsUrl);
 ?>
-
-
 <div id="av-popup" style="display: none">
     <div id="av-popup-overlay"></div>
     <div id="av-popup-content">
         <form>
             <input type="hidden" id="address-form" name="address_form" value="" />
             <div class="av-message"></div>
-
             <ul class='radios'>
             </ul>
-
             <div class="button-set buttons actions">
                 <button class="button back">
                     <span><span><?php echo $this->__('Back') ?></span></span>
                 </button>
-
                 <button class="button select">
                     <span><span><?php echo $this->__('Select') ?></span></span>
                 </button>
-
                 <button class="button skip">
                     <span><span><?php echo $this->__('Skip') ?></span></span>
                 </button>
-
                 <button class="button okay" href="<?php echo $customerServiceUrl ?>">
                     <span><span><?php echo $this->__('Customer Service') ?></span></span>
                 </button>
-
             </div>				
         </form>        
     </div>
 </div>
-
-
-
 <script>
     addressValidator.init({
         auto_populate: <?php echo (Mage::getStoreConfig('extensions_store_addressvalidator/configuration/auto_populate')) ? 'true' : 'false' ?>,
         allow_bypass: <?php echo (Mage::getStoreConfig('extensions_store_addressvalidator/configuration/allow_bypass')) ? 'true' : 'false' ?>
     });
 </script>
+<?php 
+}
+?>

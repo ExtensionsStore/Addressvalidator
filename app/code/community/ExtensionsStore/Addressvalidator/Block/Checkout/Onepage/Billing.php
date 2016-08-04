@@ -18,7 +18,10 @@ class ExtensionsStore_Addressvalidator_Block_Checkout_Onepage_Billing extends Ma
      */
     protected function _afterToHtml($html)
     {
-    	$html = '<script type="text/javascript" src="'. $this->getSkinUrl('js/extensions_store/addressvalidator/address.js').'"></script>'.$html;
+    	$helper = Mage::helper('addressvalidator');
+    	if ($helper->enabled()){
+    		$html = '<script type="text/javascript" src="'. $this->getSkinUrl('js/extensions_store/addressvalidator/address.js').'"></script>'.$html;
+    	}    	
     	
         return $html;
     }
