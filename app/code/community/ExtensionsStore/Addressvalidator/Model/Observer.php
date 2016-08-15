@@ -31,11 +31,11 @@ class ExtensionsStore_Addressvalidator_Model_Observer extends Mage_Core_Model_Ab
         $quote = Mage::getSingleton('checkout/session')->getQuote();
         $formId = $request->getParam('form_id');
         $oneStepCheckout = ($formId == 'billing_address' || $formId == 'shipping_address') ? true : false;
+        $eventName = strtolower($event->getName());
         
-        if (strtolower($event->getName()) == 'controller_action_postdispatch_checkout_onepage_savebilling' ||
-        		($event->getName() == 'controller_action_postdispatch_onestepcheckout_ajax_save_billing') && 
-        		$formId == 'billing_address') {
-        
+        if ($eventName == 'controller_action_postdispatch_checkout_onepage_savebilling' ||
+        	($eventName == 'controller_action_postdispatch_onestepcheckout_ajax_save_billing' && $formId == 'billing_address')) 
+        {
             $address = $quote->getBillingAddress();
         } else {
         
@@ -162,7 +162,7 @@ class ExtensionsStore_Addressvalidator_Model_Observer extends Mage_Core_Model_Ab
             	
             	$body = $response->getBody();
             	$responseBody = json_decode($body, true);
-            	$responseBody = (is_array($responseBody)) ? $responseBody : array();
+            	$responseBody = (is_array($responseBody)) ? $responseBody : array('update_content'=>$body);//paypal
             	unset($responseBody['goto_section']);
             	$responseBody['address_validator'] = $result;
             	 
@@ -176,7 +176,7 @@ class ExtensionsStore_Addressvalidator_Model_Observer extends Mage_Core_Model_Ab
 
         return $observer;
     }
-
+    
     /**
      * Unflag customer address previously validated
      * 

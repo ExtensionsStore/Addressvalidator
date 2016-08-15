@@ -11,7 +11,7 @@
 <config>
     <modules>
         <ExtensionsStore_Addressvalidator>
-            <version>1.5.4</version>
+            <version>1.5.5</version>
         </ExtensionsStore_Addressvalidator>
     </modules>
     <phpunit>
@@ -47,6 +47,14 @@
                         </addressvalidator_checkaddress>
                 </observers>
             </controller_action_postdispatch_onestepcheckout_ajax_save_billing>        
+            <controller_action_postdispatch_paypal_express_updateOrder>
+                <observers>
+                    <addressvalidator_checkaddress>
+                            <class>extensions_store_addressvalidator/observer</class>
+                            <method>validateAddress</method>
+                        </addressvalidator_checkaddress>
+                </observers>
+            </controller_action_postdispatch_paypal_express_updateOrder>        
         </events>     
         <layout>
             <updates>

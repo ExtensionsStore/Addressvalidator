@@ -18,7 +18,7 @@ function AddressValidator($)
      */
     var initialize = function()
     {
-        $('#co-billing-form .required-entry, #co-shipping-form .required-entry').change(function (e) {
+        $('#co-billing-form .required-entry, #co-shipping-form .required-entry, #billing_address .required-entry, #shipping_address .required-entry, #billing-address-form .required-entry, #shipping-address-form  .required-entry').change(function (e) {
         	$(this.form).find('.address-validated').val(0);
         });
         
@@ -293,14 +293,19 @@ function AddressValidator($)
     {
         var form = $('#address-form').val();
         var formType;
-        if (form == 'co-billing-form' || form == 'billing_address') {
+        if (form == 'co-billing-form' || form == 'billing_address' || form == 'billing-address-form') {
             formType = 'billing';
-        } else if (form == 'co-shipping-form' || form == 'shipping_address') {
+        } else if (form == 'co-shipping-form' || form == 'shipping_address' || form == 'shipping-address-form') {
             formType = 'shipping';
         }    
 
         return formType;
     };
+    
+    /**
+     * Needed by paypal
+     */
+    var populateCallback;
 
     /**
      * 
@@ -364,6 +369,11 @@ function AddressValidator($)
     		}
     		
     	}
+    	
+    	if (populateCallback){
+    		populateCallback();
+    		populateCallback = null;
+    	}
         
     };
 
@@ -397,9 +407,13 @@ function AddressValidator($)
             });   
         },
         
-        validateAddress : function(form, message, resultsJson)
+        validateAddress : function(form, message, resultsJson, populateCb)
         {
             validateAddress(form, message, resultsJson);
+            //needed by paypal
+            if (populateCb){
+            	populateCallback = populateCb;
+            }
         },
         
         populate : function(formType, formId, data)
