@@ -76,7 +76,12 @@ function AddressValidator($)
             e.stopPropagation();
             
             var form = $('#address-form').val();
-            $('#' + form).append('<input type="hidden" class="skip-validation" name="skip_validation" value="1" />');
+            var $skipValidation = $('#' + form).find('#skip-validation-' + form);
+            if ($skipValidation.length==0){
+                $('#' + form).append('<input type="hidden" class="skip-validation" name="skip_validation" id="skip-validation-'+form+'" value="1" />');
+            } else {
+            	$skipValidation.val(1);
+            }
 
             gotoNextStep();
 
