@@ -183,7 +183,7 @@ class ExtensionsStore_Addressvalidator_Model_Service_Fedex extends ExtensionsSto
                     $countryId = $addressData->CountryCode;
                     $country = $addressData->CountryCode;
                     $street = array($addressData->StreetLines);
-                    $city = ($addressData->v2City) ? $addressData->v2City : $addressData->City;
+                    $city = (isset($addressData->v2City)) ? $addressData->v2City : $addressData->City;
                     $regionModel = Mage::getModel('directory/region');
                     $regionModel->loadByCode($addressData->StateOrProvinceCode, $countryId);
                     $regionName = $regionModel->getName();
