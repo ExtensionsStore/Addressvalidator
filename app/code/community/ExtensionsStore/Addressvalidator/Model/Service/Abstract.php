@@ -14,7 +14,11 @@ abstract class ExtensionsStore_Addressvalidator_Model_Service_Abstract extends M
      */
     protected $_read;
     protected $_write;
-
+    /**
+     *
+     * @var Mage_Sales_Model_Quote_Address
+     */
+    protected $_address;
     /**
      * Errors
      */
@@ -63,10 +67,11 @@ abstract class ExtensionsStore_Addressvalidator_Model_Service_Abstract extends M
 
     /**
      * 
-     * @param Mage_Customer_Model_Address $customerAddress
+     * @param Mage_Customer_Model_Address|Mage_Sales_Model_Quote_Address $customerAddress
      * @return string|array Error|Results
      */
     public function getResults($customerAddress) {
+    	$this->_address = $customerAddress;
         $return = array();
         $return['error'] = true;
         $prefix = Mage::getConfig()->getTablePrefix();
@@ -219,15 +224,17 @@ abstract class ExtensionsStore_Addressvalidator_Model_Service_Abstract extends M
                 }
                 $addressValues	= implode(",", $addressValues);
                 $dateCreated = date('Y-m-d H:i:s');
+                $quoteId = Mage::getSingleton('checkout/session')->getQuoteId();
+                $quoteAddressId = ($this->_address && $this->_address->getId()) ? $this->_address->getId() : 0;
                 $storeId = Mage::app()->getStore()->getId();
                 
-                $values = array( 'hash' => $hash, 'response' => $response, 'service' => $service, 'storeId' => $storeId, 'dateCreated' => $dateCreated );
+                $values = array( 'hash' => $hash, 'response' => $response, 'service' => $service, 'quoteId' => $quoteId, 'quoteAddressId' => $quoteAddressId, 'storeId' => $storeId, 'dateCreated' => $dateCreated );
                 $values	= array_merge( $values, $address );
                 
-                $this->_write->query("REPLACE INTO $table (hash, response, service, $addressFields, store_id, date_created) VALUES(:hash, COMPRESS(:response), :service, $addressValues, :storeId, :dateCreated)", $values );
+                $this->_write->query("REPLACE INTO $table (hash, response, service, $addressFields, quote_id, quote_address_id, store_id, date_created) VALUES(:hash, COMPRESS(:response), :service, $addressValues, :quoteId, :quoteAddressId, :storeId, :dateCreated)", $values );
 	        } else {
         		$errorMessage = curl_error($ch);
-        		Mage::log($errorMessage, Zend_log::ERR, 'extensions_store_addressvalidator.log');
+        		Mage::log($errorMessage, Zend_log::DEBUG, 'extensions_store_addressvalidator.log');
         	}
         }
 

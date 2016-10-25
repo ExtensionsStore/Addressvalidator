@@ -11,7 +11,7 @@
 <config>
     <modules>
         <ExtensionsStore_Addressvalidator>
-            <version>1.5.5</version>
+            <version>1.5.7</version>
         </ExtensionsStore_Addressvalidator>
     </modules>
     <phpunit>
@@ -88,16 +88,23 @@
         <models>
             <extensions_store_addressvalidator>
                 <class>ExtensionsStore_Addressvalidator_Model</class>
-                <resourceModel>extensions_store_addressvalidator_resource</resourceModel>
+                <resourceModel>addressvalidator_resource</resourceModel>
             </extensions_store_addressvalidator>
-            <extensions_store_addressvalidator_resource>
+            <addressvalidator>
+                <class>ExtensionsStore_Addressvalidator_Model</class>
+                <resourceModel>addressvalidator_resource</resourceModel>
+            </addressvalidator>
+            <addressvalidator_resource>
                 <class>ExtensionsStore_Addressvalidator_Model_Resource</class>
                 <entities>
                     <address>
                         <table>extensions_store_addressvalidator_addresses</table>
                     </address>
+                    <response>
+                        <table>extensions_store_addressvalidator_responses</table>
+                    </response>
                 </entities>
-            </extensions_store_addressvalidator_resource>	            
+            </addressvalidator_resource>
         </models>
         <helpers>
             <extensions_store_addressvalidator>

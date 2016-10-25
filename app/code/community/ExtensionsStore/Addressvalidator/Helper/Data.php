@@ -32,10 +32,8 @@ class ExtensionsStore_Addressvalidator_Helper_Data extends Mage_Core_Helper_Abst
      * @return boolean
      */
     public function isDebug() {
-        $httpHost = Mage::app()->getFrontController()->getRequest()->getHttpHost();
-
-        $debug = (preg_match('/trunk|local|stage/', $httpHost)) ? true : false;
-
+    	$storeId = Mage::app()->getStore()->getId();
+    	$debug = (bool) Mage::getStoreConfig('extensions_store_addressvalidator/configuration/debug_mode', $storeId);
         return $debug;
     }
     
@@ -57,7 +55,7 @@ class ExtensionsStore_Addressvalidator_Helper_Data extends Mage_Core_Helper_Abst
     public function tooManyAttempts() {
         $numAttempts = (int) Mage::getStoreConfig('extensions_store_addressvalidator/configuration/num_attempts');
         $numAttempts = ($numAttempts >= self::MIN_ATTEMPTS && $numAttempts <= self::MAX_ATTEMPTS) ? $numAttempts : self::DEFAULT_ATTEMPTS;
-        $numAttempts = ($this->isDebug()) ? 200 : $numAttempts;
+        $numAttempts = ($this->isDebug()) ? 99999 : $numAttempts;
 
         $checkoutSession = Mage::getSingleton('checkout/session');
         $numAttempted = (int) $checkoutSession->getData('num_attempted');
@@ -122,7 +120,7 @@ class ExtensionsStore_Addressvalidator_Helper_Data extends Mage_Core_Helper_Abst
 
     /**
      * 
-     * @param Mage_Customer_Model_Address $customerAddress
+     * @param Mage_Customer_Model_Address|Mage_Sales_Model_Quote_Address $customerAddress
      * @return array
      */
     public function getExtractableAddressArray($customerAddress) {
@@ -202,7 +200,7 @@ class ExtensionsStore_Addressvalidator_Helper_Data extends Mage_Core_Helper_Abst
             $return = $service->getResults($address);
         } catch (Exception $e) {
             $return['data'] = $e->getMessage();
-            Mage::log($e->getMessage(), null, 'extensions_store_addressvalidator.log');
+            Mage::log($e->getMessage(), Zend_log::DEBUG, 'extensions_store_addressvalidator.log');
         }
 
         return $return;
@@ -235,9 +233,9 @@ class ExtensionsStore_Addressvalidator_Helper_Data extends Mage_Core_Helper_Abst
             
             if ($regionId && $regionId != @$data['region_id']){
                 
-                Mage::log('Posted region is not the same as validated region.', null, 'extensions_store_addressvalidator.log');
-                Mage::log($postData,null,'extensions_store_addressvalidator.log');
-                Mage::log($data,null,'extensions_store_addressvalidator.log');
+                Mage::log('Posted region is not the same as validated region.', Zend_log::DEBUG, 'extensions_store_addressvalidator.log');
+                Mage::log($postData,Zend_log::DEBUG,'extensions_store_addressvalidator.log');
+                Mage::log($data,Zend_log::DEBUG,'extensions_store_addressvalidator.log');
                 return false;
             }
                         
@@ -320,7 +318,7 @@ class ExtensionsStore_Addressvalidator_Helper_Data extends Mage_Core_Helper_Abst
             }
             
         } catch(Exception $e){
-            Mage::log($e->getMessage(),null, 'extensions_store_addressvalidator.log');
+            Mage::log($e->getMessage(),Zend_Log::DEBUG, 'extensions_store_addressvalidator.log');
             return false;
         }
         

@@ -98,7 +98,7 @@ class ExtensionsStore_Addressvalidator_Model_Observer extends Mage_Core_Model_Ab
             	$body = $response->getBody();
             	$responseBody = json_decode($body, true);
             	$responseBody = (is_array($responseBody)) ? $responseBody : array();
-            	unset($responseBody['goto_section']);
+            	$responseBody['goto_section'] = '';
             	$responseBody['address_validator'] = $result;
             	 
             	$response->setBody(Mage::helper('core')->jsonEncode($responseBody));
@@ -120,7 +120,7 @@ class ExtensionsStore_Addressvalidator_Model_Observer extends Mage_Core_Model_Ab
             		$returns[$key] = $service->getResults($address);
             	}
             } catch (Exception $e) {
-                Mage::log($e->getMessage(), null, 'extensions_store_addressvalidator.log');
+                Mage::log($e->getMessage(), Zend_Log::DEBUG, 'extensions_store_addressvalidator.log');
             }
             
             if (count($returns)>0){
@@ -163,7 +163,7 @@ class ExtensionsStore_Addressvalidator_Model_Observer extends Mage_Core_Model_Ab
             	$body = $response->getBody();
             	$responseBody = json_decode($body, true);
             	$responseBody = (is_array($responseBody)) ? $responseBody : array('update_content'=>$body);//paypal
-            	unset($responseBody['goto_section']);
+            	$responseBody['goto_section'] = '';
             	$responseBody['address_validator'] = $result;
             	 
             	$response->setBody(Mage::helper('core')->jsonEncode($responseBody));
@@ -210,7 +210,7 @@ class ExtensionsStore_Addressvalidator_Model_Observer extends Mage_Core_Model_Ab
             
             }catch (Exception $e){
             
-                Mage::log($e->getMessage(),null,'extensions_store_addressvalidator.log');
+                Mage::log($e->getMessage(),Zend_Log::DEBUG,'extensions_store_addressvalidator.log');
             }
             
         }

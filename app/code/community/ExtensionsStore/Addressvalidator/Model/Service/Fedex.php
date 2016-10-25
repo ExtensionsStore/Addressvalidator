@@ -148,7 +148,7 @@ class ExtensionsStore_Addressvalidator_Model_Service_Fedex extends ExtensionsSto
 
         } else {
 
-            Mage::log($statusCode . '-' . $statusMessage, null, 'extensions_store_addressvalidator.log');
+            Mage::log($statusCode . '-' . $statusMessage, Zend_log::DEBUG, 'extensions_store_addressvalidator.log');
         }
 
         return $return;
@@ -203,7 +203,7 @@ class ExtensionsStore_Addressvalidator_Model_Service_Fedex extends ExtensionsSto
                 
 
             } catch (Exception $e) {
-                Mage::log($e->getMessage(), null, 'extensions_store_addressvalidator.log');
+                Mage::log($e->getMessage(), Zend_log::DEBUG, 'extensions_store_addressvalidator.log');
             }
         }
 

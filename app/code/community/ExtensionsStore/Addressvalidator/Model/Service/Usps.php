@@ -105,7 +105,7 @@ class ExtensionsStore_Addressvalidator_Model_Service_Usps extends ExtensionsStor
         } else {
 
         	$return['error'] = true;
-        	Mage::log($address->Error->Number . '-' . $address->Error->Description, null, 'extensions_store_addressvalidator.log');
+        	Mage::log($address->Error->Number . '-' . $address->Error->Description, Zend_log::DEBUG, 'extensions_store_addressvalidator.log');
             $return['data'] = $address->Error->Description;
         }
 
@@ -166,7 +166,7 @@ class ExtensionsStore_Addressvalidator_Model_Service_Usps extends ExtensionsStor
                     'postcode' => $postcode,
                 );
             } catch (Exception $e) {
-                Mage::log($e->getMessage(), null, 'extensions_store_addressvalidator.log');
+                Mage::log($e->getMessage(),  Zend_Log::DEBUG, 'extensions_store_addressvalidator.log');
             }
         }
 
