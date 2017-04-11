@@ -60,7 +60,7 @@ class ExtensionsStore_Addressvalidator_Model_Observer extends Mage_Core_Model_Ab
         //already validated
         $addressValidated = @$postData['address_validated'];
         if ($addressValidated) {
-            $postData['customer_address_id'] = $addressValidated;
+        	$postData['customer_address_id'] = (is_numeric($addressValidated) && $addressValidated>1) ? $addressValidated : NULL;
             $helper->setAddressData($address, $postData, true);
             return $observer;
         }
