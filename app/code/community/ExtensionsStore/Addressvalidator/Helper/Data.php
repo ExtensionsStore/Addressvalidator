@@ -251,7 +251,7 @@ class ExtensionsStore_Addressvalidator_Helper_Data extends Mage_Core_Helper_Abst
             
             $customerAddressId = (int)$address->getCustomerAddressId();
             
-            if ($customerAddressId){
+            if ($customerAddressId && $customerAddressId > 1){
                                 
                 $customerAddress = Mage::getModel('customer/address')->load($customerAddressId);
                 $customerAddress->addData($data);
@@ -289,7 +289,7 @@ class ExtensionsStore_Addressvalidator_Helper_Data extends Mage_Core_Helper_Abst
 
                     $customerShippingAddressId = (int)$shippingAddress->getCustomerAddressId();
                     
-                    if ($customerShippingAddressId){
+                    if ($customerShippingAddressId && $customerShippingAddressId > 1){
                     
                         $customerShippingAddress = Mage::getModel('customer/address')->load($customerAddressId);
                         $customerShippingAddress->addData($data);
