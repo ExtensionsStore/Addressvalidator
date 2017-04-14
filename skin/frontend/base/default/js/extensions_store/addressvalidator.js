@@ -248,7 +248,8 @@ function AddressValidator($)
     	
     	if (config.allow_bypass === true){
     		
-            $('#' + form).append('<input type="hidden" class="address-validated" name="address_validated" value="1" />');
+            var formType = (form == 'co-billing-form') ? 'billing' : 'shipping';
+			$('#' + form).append('<input type="hidden" class="address-validated" name="' + formType + '[address_validated]" value="1" />');
     		gotoNextStep();
 
     	} else {
@@ -388,6 +389,7 @@ function AddressValidator($)
     var gotoNextStep = function ()
     {
         var formId = $('#address-form').val();
+		checkout.setLoadWaiting(false);
 
         if (formId == 'co-billing-form') {
             billing.save();
