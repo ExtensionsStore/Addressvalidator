@@ -24,27 +24,7 @@ if (Billing){
 	        var addressValidatorObj = response.address_validator;
 
 	        if (addressValidatorObj) {
-	        	if (addressValidatorObj.hasOwnProperty('validate')){
-	        		
-	        		if (addressValidatorObj.validate === true){
-	        			
-	        			if (addressValidatorObj.error === false){
-		                    addressValidator.validateAddress('co-billing-form', addressValidatorObj.message, addressValidatorObj.data);
-	        				
-	        			} else {
-			                if (addressValidatorObj.data.indexOf('http') != -1) {
-			                    addressValidator.redirectSupport(addressValidatorObj.message, addressValidatorObj.data);
-			                } else {
-			                    addressValidator.editAddress('co-billing-form', addressValidatorObj.message);
-			                }
-			                return false;	        				
-	        			}
-	                    
-	        		} else if (addressValidatorObj.error === false) {
-	        			addressValidator.populate('billing','co-billing-form', addressValidatorObj.data);
-	        		}
-    		
-	        	} 
+	        	addressValidator.handleResponse('co-billing-form', addressValidatorObj);
 	        }
 
 	        checkout.setStepResponse(response);
@@ -75,6 +55,8 @@ if (Shipping){
 	        var addressValidatorObj = response.address_validator;
 
 	        if (addressValidatorObj) {
+	        	addressValidator.handleResponse('co-shipping-form', addressValidatorObj);
+	        	/*
 	        	if (addressValidatorObj.hasOwnProperty('validate')){
 	        		
 	        		if (addressValidatorObj.validate === true){
@@ -95,7 +77,7 @@ if (Shipping){
 	        			addressValidator.populate('shipping','co-shipping-form', addressValidatorObj.data);
 	        		}
     		
-	        	} 
+	        	} */
 	        }
 
 	        checkout.setStepResponse(response);

@@ -11,6 +11,7 @@ function AddressValidator($)
 
     var config = {};
     var results = [];
+    var checkoutType = 'onepage';
     
     /**
      * Initialize popup
@@ -111,6 +112,7 @@ function AddressValidator($)
      */
     var initOneStepCheckout = function()
     {
+    	checkoutType = 'onestepcheckout';
         //onestepcheckout form input change
         $('#billing_address .required-entry').change(function (e) {
         	$('#billing_address').find('.address-validated').val(0);
@@ -149,29 +151,65 @@ function AddressValidator($)
             		var response = $.parseJSON(res.responseText);
             		if (response.hasOwnProperty('address_validator')) {
             			var av = response.address_validator;
-            			if (!av.error) {
-            				var formId = av.form_id;
-            				if (savingBilling || savingShipping){
-            					if (!av.validate){
-            						var formType = (formId == 'billing_address') ? 'billing' : 'shipping';
-            			            results = JSON.parse(av.data);
-            			            if (results.length > 0){
-                						populate(formType,results[0]);
-            			            }
-            					} else {
-                    				validateAddress(formId, av.message, av.data);
-            					}
-                				if (formId =='billing_address'){
-                					savingBilling = false;
-                				} else {
-                					savingShipping = false;
-                				}            					
-            				}
-            			}
+            			handleResponse(av);
             		}
             	}                			
         	}
         });    	
+    };
+    
+    /**
+     * Initialize light checkout
+     */
+    var initLightCheckout = function()
+    {    	
+    	checkoutType = 'lightcheckout';
+    	var formId = ($('#billing_use_for_shipping_yes').is(':checked')) ? 'billing-new-address-form' : 'shipping-new-address-form';
+        Ajax.Responders.register({
+        	onCreate : function(req, transport, json){
+        		if (req.parameters && req.parameters.action){
+        	    	formId = ($('#billing_use_for_shipping_yes').is(':checked')) ? 'billing-new-address-form' : 'shipping-new-address-form';
+                    var $skipValidation = $('#' + formId).find('#skip-validation-' + formId);
+        			var skipValidation = (req.parameters.action == 'save_payment_methods' && ($skipValidation.length == 0 || $skipValidation.val() == 0)) ? 0 : 1;
+        			req.url += '?form_id='+formId+'&checkout_type=lightcheckout&skip_validation=' + skipValidation;        				
+        		}
+        	},
+        	onComplete : function(req, res) {
+            	if (res.readyState == 4 && res.responseText.length > 0) {
+            		var response = $.parseJSON(res.responseText);
+            		if (response.hasOwnProperty('address_validator')) {
+            			var av = response.address_validator;
+            			populateCallback = function(){
+            				checkout.LightcheckoutSubmit();
+            			};
+            			handleResponse(formId, av);
+            		}
+            	}                			
+        	}
+        });    	
+    };    
+    
+    /**
+     * Handle response from Address Validator observer
+     * @param string formId 
+     * @param object av The address validator response object
+     */
+    var handleResponse = function (formId, av){
+		if (av.validate === true){
+			if (av.error === false){
+                validateAddress(av.form_id, av.message, av.data);
+				
+			} else {
+                if (av.data.indexOf('http') != -1) {
+                    redirectSupport(av.message, av.data);
+                } else {
+                    editAddress(av.form_id, av.message);
+                }
+                return false;	        				
+			}
+		} else if (av.error === false) {
+			populate('billing',av.form_id, av.data);
+		}
     };
     
     /**
@@ -298,9 +336,9 @@ function AddressValidator($)
     {
         var form = $('#address-form').val();
         var formType;
-        if (form == 'co-billing-form' || form == 'billing_address' || form == 'billing-address-form') {
+        if (form == 'co-billing-form' || form == 'billing_address' || form == 'billing-address-form' || form == 'billing-new-address-form') {
             formType = 'billing';
-        } else if (form == 'co-shipping-form' || form == 'shipping_address' || form == 'shipping-address-form') {
+        } else if (form == 'co-shipping-form' || form == 'shipping_address' || form == 'shipping-address-form' || form == 'shipping-new-address-form') {
             formType = 'shipping';
         }    
 
@@ -320,42 +358,44 @@ function AddressValidator($)
     var populate = function(formType, address)
     {
         //deselect addressbook entry
-        $('#' + formType + '-new-address-form').show();
+    	var formId = $('#address-form').val();
+        $('#' + formId).show();
         var customerAddressId = $('#' + formType + '-address-select').val();
         var addressValidated = (customerAddressId) ? customerAddressId : 1;
         $('#' + formType + '-address-select').val(null);
+        var fieldPrefix = formType + ((checkoutType == 'lightcheckout') ? '_' : '\\:');
 
-        var originalStreet1 = $('#' + formType + '\\:street1').val();
+        var originalStreet1 = $('#' + fieldPrefix + 'street1').val();
         var street1 = address.street[0];
-        $('#' + formType + '\\:street1').val(street1);
+        $('#' + fieldPrefix + 'street1').val(street1);
 
         if (typeof address.street[1] != 'undefined') {
-            $('#' + formType + '\\:street2').val(address.street[1]);
+            $('#' + fieldPrefix + 'street2').val(address.street[1]);
         } else {
-        	var originalStreet2 = $('#' + formType + '\\:street2').val();
+        	var originalStreet2 = $('#' + fieldPrefix + 'street2').val();
         	//remove line 2 if apt number added to line 1
         	if (originalStreet2 && originalStreet1.toUpperCase().indexOf(' APT ') < 0 && street1.toUpperCase().indexOf(' APT ') >= 0){
-                $('#' + formType + '\\:street2').val('');
+                $('#' + fieldPrefix + 'street2').val('');
         	}
         }
         if (typeof address.street[2] != 'undefined') {
-            var street2 = $('#' + formType + '\\:street2').val();
-            $('#' + formType + '\\:street2').val(street2 + ' ' + address.street[2]);
+            var street2 = $('#' + fieldPrefix + 'street2').val();
+            $('#' + fieldPrefix + 'street2').val(street2 + ' ' + address.street[2]);
         }
 
         var city = (typeof address.city !== 'string' && address.city.length > 1) ? address.city.join(', ') : address.city;
 
-        $('#' + formType + '\\:city').val(city);
-        $('#' + formType + '\\:region').val(address.region);
-        $('#' + formType + '\\:region_id').val(address.region_id);
-        $('#' + formType + '\\:postcode').val(address.postcode);
-        var $countryInput = $('#' + formType + '\\:country_id');
+        $('#' + fieldPrefix + 'city').val(city);
+        $('#' + fieldPrefix + 'region').val(address.region);
+        $('#' + fieldPrefix + 'region_id').val(address.region_id);
+        $('#' + fieldPrefix + 'postcode').val(address.postcode);
+        var $countryInput = $('#' + fieldPrefix + 'country_id');
         $countryInput.val(address.country_id);
 
-        $('#' + formType + '\\:save_in_address_book').attr('checked',true);  
+        $('#' + fieldPrefix + 'save_in_address_book').attr('checked',true);  
 
         var addressValidatedInput = '<input type="hidden" class="address-validated input-text" name="'+formType+'[address_validated]" value="'+addressValidated+'" />';
-    	var $form = $('#co-' + formType + '-form');
+    	var $form = $('#' + formId);
     	if ($form.length>0){
             var $addressValidated = $form.find('.address-validated');
             if ($addressValidated.length > 0) {
@@ -408,8 +448,14 @@ function AddressValidator($)
             	initialize();
             	if ($('#onestepcheckout-form').length > 0){
                 	initOneStepCheckout();
+            	} else if ($('#gcheckout-onepage-form').length > 0){
+                	initLightCheckout();
             	}
             });   
+        },
+        
+        handleResponse : function(formId, av){
+        	handleResponse(formId, av);
         },
         
         validateAddress : function(form, message, resultsJson, populateCb)
