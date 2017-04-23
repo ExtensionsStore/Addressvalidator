@@ -23,6 +23,11 @@ class ExtensionsStore_Addressvalidator_Model_Observer extends Mage_Core_Model_Ab
 			return $observer;
 		}
 		$request = Mage::app()->getRequest();
+		//customer elected to skip validation
+		$skipValidation = (int)$request->getParam('skip_validation');
+		if ($skipValidation){
+			return $observer;
+		}
 		$event = $observer->getEvent();
 		$controller = $event->getControllerAction();
 		$response = $controller->getResponse();
@@ -30,7 +35,8 @@ class ExtensionsStore_Addressvalidator_Model_Observer extends Mage_Core_Model_Ab
 		$storeId = $store->getId();
 		$quote = Mage::getSingleton('checkout/session')->getQuote();
 		$formId = $request->getParam('form_id');
-		$oneStepCheckout = ($formId == 'billing_address' || $formId == 'shipping_address') ? true : false;
+		$checkoutType = $request->getParam('checkout_type');
+		$checkoutType = ($checkoutType) ? $checkoutType : 'onepage';
 		$eventName = strtolower($event->getName());
 		
 		if ($eventName == 'controller_action_postdispatch_checkout_onepage_savebilling' ||
@@ -43,7 +49,9 @@ class ExtensionsStore_Addressvalidator_Model_Observer extends Mage_Core_Model_Ab
 		}
 		
 		//get address data
-		if ($address->getAddressType()=='billing'){
+		$billing = $request->getParam('billing');
+		$useForShipping = (isset($billing['use_for_shipping'])) ? (bool)$billing['use_for_shipping'] : false;
+		if ($address->getAddressType()=='billing' || $useForShipping){
 			$postData = $request->getParam('billing');
 		} else {
 			$postData = $request->getParam('shipping');
@@ -66,12 +74,6 @@ class ExtensionsStore_Addressvalidator_Model_Observer extends Mage_Core_Model_Ab
 				unset($postData['address_id']);
 			}
 			$helper->setAddressData($address, $postData, isset($postData['address_id']));
-			return $observer;
-		}
-		
-		//customer elected to skip validation
-		$skipValidation = (int)$request->getParam('skip_validation');
-		if ($skipValidation){
 			return $observer;
 		}
 		
@@ -137,6 +139,7 @@ class ExtensionsStore_Addressvalidator_Model_Observer extends Mage_Core_Model_Ab
 					$formId = 'co-'.$address->getAddressType().'-form';
 				}
 				$result['form_id'] = $formId;
+				$result['checkout_type'] = $checkoutType;
 				$result['validate'] = true;
 				$result['error'] = $returned['error'];
 				$responseCode = ($helper->isDebug() && isset($returned['response_code']) && $returned['response_code']) ? ' (' . $returned['response_code'] . ')' : '';
@@ -168,6 +171,10 @@ class ExtensionsStore_Addressvalidator_Model_Observer extends Mage_Core_Model_Ab
 				$responseBody = json_decode($body, true);
 				$responseBody = (is_array($responseBody)) ? $responseBody : array('update_content'=>$body);//paypal
 				$responseBody['goto_section'] = '';
+				//light checkout 
+				if ($checkoutType == 'lightcheckout' && isset($responseBody['section']) && $responseBody['section']=='centinel'){
+					$responseBody['section'] = 'addressvalidator';
+				}
 				$responseBody['address_validator'] = $result;
 				
 				$response->setBody(Mage::helper('core')->jsonEncode($responseBody));
@@ -221,6 +228,26 @@ class ExtensionsStore_Addressvalidator_Model_Observer extends Mage_Core_Model_Ab
 			
 		}
 		
+		return $observer;
+	}
+	
+	/**
+	 * Add address js before billing block html
+	 * 
+	 * @see core_block_abstract_to_html_after
+	 * @param Varien_Event_Observer $observer
+	 * @return Varien_Event_Observer $observer
+	 */
+	public function prependAddressJs($observer){
+		$helper = Mage::helper('addressvalidator');
+		$block = $observer->getBlock();
+		if ($helper->enabled() && $block->getNameInLayout()=='checkout.onepage.billing'){
+			$transport = $observer->getTransport();
+			$html = $transport->getHtml();
+			$html = '<script type="text/javascript" src="'. $block->getSkinUrl('js/extensions_store/addressvalidator/address.js').'"></script>'.$html;
+			$transport->setHtml($html);
+		}
+		 
 		return $observer;
 	}
 	
