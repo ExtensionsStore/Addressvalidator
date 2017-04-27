@@ -48,6 +48,16 @@ class ExtensionsStore_Addressvalidator_Model_Observer extends Mage_Core_Model_Ab
 			$address = $quote->getShippingAddress();
 		}
 		
+		//already validated address		
+		$customerAddressId = $address->getCustomerAddressId();
+		if ($customerAddressId){
+			$validatedAddress = Mage::getModel('extensions_store_addressvalidator/address');
+			$validatedAddress->load($customerAddressId, 'address_id');
+			if ($validatedAddress->getId() && $validatedAddress->getValidated()){
+				return $observer;
+			}
+		}
+		
 		//get address data
 		$billing = $request->getParam('billing');
 		$useForShipping = (isset($billing['use_for_shipping'])) ? (bool)$billing['use_for_shipping'] : false;
@@ -68,7 +78,7 @@ class ExtensionsStore_Addressvalidator_Model_Observer extends Mage_Core_Model_Ab
 		//already validated
 		$addressValidated = @$postData['address_validated'];
 		if ($addressValidated) {
-			$postData['customer_address_id'] = (is_numeric($addressValidated) && $addressValidated>1) ? $addressValidated : NULL;
+			$postData['customer_address_id'] = (is_numeric($addressValidated) && $addressValidated>1) ? $addressValidated : $address->getCustomerAddressId();
 			$postData['address_id'] = (isset($postData['address_id']) && $postData['address_id']>0) ? $postData['address_id']: $address->getId();
 			if (!$postData['address_id']){
 				unset($postData['address_id']);
