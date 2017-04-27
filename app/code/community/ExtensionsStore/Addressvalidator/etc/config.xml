@@ -11,7 +11,7 @@
 <config>
     <modules>
         <ExtensionsStore_Addressvalidator>
-            <version>1.5.10</version>
+            <version>1.5.11</version>
         </ExtensionsStore_Addressvalidator>
     </modules>
     <phpunit>
