@@ -433,6 +433,8 @@ function AddressValidator($)
             billing.save();
         } else if (formId == 'co-shipping-form') {
             shipping.save();
+        } else if (checkoutType == 'lightcheckout'){
+        	checkout.LightcheckoutSubmit();
         }
     };    
     

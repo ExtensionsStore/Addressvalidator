@@ -99,9 +99,9 @@ class ExtensionsStore_Addressvalidator_Model_Observer extends Mage_Core_Model_Ab
 			return $observer;
 		}
 		
+		$allowBypass = (int)Mage::getStoreConfig('extensions_store_addressvalidator/configuration/allow_bypass', $storeId);
+		
 		if ($helper->tooManyAttempts()) {
-			
-			$allowBypass = (int)Mage::getStoreConfig('extensions_store_addressvalidator/configuration/allow_bypass', $storeId);
 			
 			if ($allowBypass){
 				$result = array();
@@ -174,6 +174,7 @@ class ExtensionsStore_Addressvalidator_Model_Observer extends Mage_Core_Model_Ab
 					
 					$result['error'] = true;
 					$result['data'] = $returned['data'];
+					$result['validate'] = ($allowBypass) ? false : true;
 					$result['message'] = (($returned['data']) ? $returned['data'] : $helper->getMessaging('invalid_address')) . $responseCode;
 				}
 				
@@ -183,7 +184,9 @@ class ExtensionsStore_Addressvalidator_Model_Observer extends Mage_Core_Model_Ab
 				$responseBody['goto_section'] = '';
 				//light checkout 
 				if ($checkoutType == 'lightcheckout' && isset($responseBody['section']) && $responseBody['section']=='centinel'){
-					$responseBody['section'] = 'addressvalidator';
+					if (!$result['error'] || !$allowBypass){
+						$responseBody['section'] = 'addressvalidator';
+					}
 				}
 				$responseBody['address_validator'] = $result;
 				
