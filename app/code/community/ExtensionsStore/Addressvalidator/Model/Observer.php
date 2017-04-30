@@ -38,17 +38,19 @@ class ExtensionsStore_Addressvalidator_Model_Observer extends Mage_Core_Model_Ab
 		$checkoutType = $request->getParam('checkout_type');
 		$checkoutType = ($checkoutType) ? $checkoutType : 'onepage';
 		$eventName = strtolower($event->getName());
-		
+		$billing = $request->getParam('billing');
+		$useForShipping = (isset($billing['use_for_shipping'])) ? (bool)$billing['use_for_shipping'] : false;
 		if ($eventName == 'controller_action_postdispatch_checkout_onepage_savebilling' ||
-				($eventName == 'controller_action_postdispatch_onestepcheckout_ajax_save_billing' && $formId == 'billing_address'))
+				($eventName == 'controller_action_postdispatch_onestepcheckout_ajax_save_billing' && $formId == 'billing_address') ||
+				$useForShipping)
 		{
 			$address = $quote->getBillingAddress();
 		} else {
-			
+		
 			$address = $quote->getShippingAddress();
 		}
 		
-		//already validated address		
+		//already validated address
 		$customerAddressId = $address->getCustomerAddressId();
 		if ($customerAddressId){
 			$validatedAddress = Mage::getModel('extensions_store_addressvalidator/address');
@@ -59,8 +61,6 @@ class ExtensionsStore_Addressvalidator_Model_Observer extends Mage_Core_Model_Ab
 		}
 		
 		//get address data
-		$billing = $request->getParam('billing');
-		$useForShipping = (isset($billing['use_for_shipping'])) ? (bool)$billing['use_for_shipping'] : false;
 		if ($address->getAddressType()=='billing' || $useForShipping){
 			$postData = $request->getParam('billing');
 		} else {
