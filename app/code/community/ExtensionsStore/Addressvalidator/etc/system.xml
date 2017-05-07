@@ -56,14 +56,14 @@
                             <show_in_website>1</show_in_website>
                             <show_in_store>1</show_in_store>
                             <comment><![CDATA[Select countries to validate addresses for.]]></comment>
-                        </countries>                        
+                        </countries>
                         <num_results translate="label">
                             <label>Number of Results</label>
                             <frontend_type>text</frontend_type>
                             <sort_order>30</sort_order>
                             <show_in_default>1</show_in_default>
                             <comment><![CDATA[Select the number of results to show.]]></comment>
-                        </num_results>                           
+                        </num_results>
                         <num_attempts translate="label">
                             <label>Number of Attempts Allowed</label>
                             <frontend_type>text</frontend_type>
@@ -99,12 +99,42 @@
                             <show_in_website>1</show_in_website>
                             <show_in_store>1</show_in_store>
                             <comment><![CDATA[If YES, no popup will show. Validated address will be automatically populated.]]></comment>
-                        </auto_populate>   
+                        </auto_populate>
+                        <require_apartment translate="label">
+                            <label>Require Apartment</label>
+                            <frontend_type>select</frontend_type>
+                            <source_model>adminhtml/system_config_source_yesno</source_model>
+                            <sort_order>80</sort_order>
+                            <show_in_default>1</show_in_default>
+                            <show_in_website>1</show_in_website>
+                            <show_in_store>1</show_in_store>
+                            <comment><![CDATA[If service returns apartment required, require it.]]></comment>
+                        </require_apartment>
+                        <validate_virtual_quote translate="label">
+                            <label>Validate Virtual Quote</label>
+                            <frontend_type>select</frontend_type>
+                            <source_model>adminhtml/system_config_source_yesno</source_model>
+                            <sort_order>90</sort_order>
+                            <show_in_default>1</show_in_default>
+                            <show_in_website>1</show_in_website>
+                            <show_in_store>1</show_in_store>
+                            <comment><![CDATA[A virtual quote is a shopping cart that does not contain shippable items (i.e. downloadable products). Select No to not validate address if shopping cart contains only virtual items.]]></comment>
+                        </validate_virtual_quote>
+                        <save_customer_address translate="label">
+                            <label>Save Customer Addresses</label>
+                            <frontend_type>select</frontend_type>
+                            <source_model>adminhtml/system_config_source_yesno</source_model>
+                            <sort_order>100</sort_order>
+                            <show_in_default>1</show_in_default>
+                            <show_in_website>1</show_in_website>
+                            <show_in_store>1</show_in_store>
+                            <comment><![CDATA[If No, validated customer addresses will not be saved.]]></comment>
+                        </save_customer_address>
                         <service translate="label">
                             <label>Service</label>
                             <frontend_type>select</frontend_type>
                             <source_model>extensions_store_addressvalidator/adminhtml_system_config_source_service</source_model>
-                            <sort_order>80</sort_order>
+                            <sort_order>110</sort_order>
                             <show_in_default>1</show_in_default>
                             <show_in_website>1</show_in_website>
                             <show_in_store>1</show_in_store>
@@ -114,22 +144,22 @@
                             <label>Secondary Service</label>
                             <frontend_type>select</frontend_type>
                             <source_model>extensions_store_addressvalidator/adminhtml_system_config_source_service</source_model>
-                            <sort_order>90</sort_order>
+                            <sort_order>120</sort_order>
                             <show_in_default>1</show_in_default>
                             <show_in_website>1</show_in_website>
                             <show_in_store>1</show_in_store>
                             <comment><![CDATA[If selected, results from both services will be combined.]]></comment>
-                        </service2>                          
+                        </service2>
                         <service_international translate="label">
                             <label>International Service</label>
                             <frontend_type>select</frontend_type>
                             <source_model>extensions_store_addressvalidator/adminhtml_system_config_source_service</source_model>
-                            <sort_order>100</sort_order>
+                            <sort_order>130</sort_order>
                             <show_in_default>1</show_in_default>
                             <show_in_website>1</show_in_website>
                             <show_in_store>1</show_in_store>
                             <comment><![CDATA[Optional provider for international addresses.]]></comment>
-                        </service_international>                           
+                        </service_international>
                     </fields>
                 </configuration>
                 <messaging translate="label" module="extensions_store_addressvalidator">
@@ -167,9 +197,9 @@
                             <comment><![CDATA[Message indicating apartment number is required on Address Line 2.]]></comment>
                         </apartment_required>
                         <apartment_not_found translate="label">
-                            <label>Apartment Required Message</label>
+                            <label>Apartment Invalid Message</label>
                             <frontend_type>textarea</frontend_type>
-                            <sort_order>40</sort_order>
+                            <sort_order>50</sort_order>
                             <show_in_default>1</show_in_default>
                             <comment><![CDATA[Message indicating apartment number is invalid and to enter on Address Line 2.]]></comment>
                         </apartment_not_found>
@@ -195,7 +225,7 @@
                             <sort_order>10</sort_order>
                             <show_in_default>1</show_in_default>
                             <comment><![CDATA[API Access Key.]]></comment>
-                        </access_license_number>                                        
+                        </access_license_number>
                         <user_id translate="label">
                             <label>Account Number</label>
                             <frontend_type>obscure</frontend_type>
@@ -211,8 +241,8 @@
                             <sort_order>20</sort_order>
                             <show_in_default>1</show_in_default>
                             <comment><![CDATA[API User Password.]]></comment>
-                        </password>                         
-                    </fields>                     
+                        </password>
+                    </fields>
                 </ups>
             </groups>
         </extensions_store_addressvalidator>

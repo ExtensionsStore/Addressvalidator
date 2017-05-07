@@ -108,8 +108,14 @@ abstract class ExtensionsStore_Addressvalidator_Model_Service_Abstract extends M
                         //process results into array
                         $results = $this->_processResults($resultsData);
 
-
                         if (is_array($results) && count($results) > 0) {
+                        	
+                        	foreach ($results as $i=>$result){
+                        		if (!isset($result['formatted_address'])){
+                        			$countryId = $result['country_id'];
+                        			 $results[$i]['formatted_address'] = Mage::helper('addressvalidator')->formatAddress($countryId, $this->_address, $result);
+                        		}
+                        	}
 
                             $return['data'] = $results;
                         } else {
@@ -256,4 +262,5 @@ abstract class ExtensionsStore_Addressvalidator_Model_Service_Abstract extends M
      * @return array
      */
     abstract protected function _processResults(array $responseData);
+
 }

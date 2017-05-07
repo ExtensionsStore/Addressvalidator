@@ -23,9 +23,13 @@ class ExtensionsStore_Addressvalidator_Model_Observer extends Mage_Core_Model_Ab
 			return $observer;
 		}
 		$request = Mage::app()->getRequest();
-		//customer elected to skip validation
-		$skipValidation = (int)$request->getParam('skip_validation');
+		//if customer elected to skip validation, we never validated again for this session
+		$skipValidation = (int)$request->getParam('skip_validation') || Mage::getSingleton('checkout/session')->getSkipValidation() || Mage::getSingleton('core/cookie')->get('skip_validation');
 		if ($skipValidation){
+			if (!Mage::getSingleton('checkout/session')->getSkipValidation()){
+				Mage::getSingleton('checkout/session')->setSkipValidation(true);
+			}
+			Mage::getSingleton('core/cookie')->set('skip_validation', 1);
 			return $observer;
 		}
 		$event = $observer->getEvent();
@@ -33,7 +37,13 @@ class ExtensionsStore_Addressvalidator_Model_Observer extends Mage_Core_Model_Ab
 		$response = $controller->getResponse();
 		$store = Mage::app()->getStore();
 		$storeId = $store->getId();
+		$validateVirtualQuote = Mage::getStoreConfig('extensions_store_addressvalidator/configuration/validate_virtual_quote',$storeId);
 		$quote = Mage::getSingleton('checkout/session')->getQuote();
+		if ($quote->isVirtual() && !$validateVirtualQuote){
+			return $observer;
+		}
+		//needed by paypal 
+		Mage::getSingleton('checkout/session')->setAddressValidated(false);
 		$formId = $request->getParam('form_id');
 		$checkoutType = $request->getParam('checkout_type');
 		$checkoutType = ($checkoutType) ? $checkoutType : 'onepage';
@@ -46,7 +56,7 @@ class ExtensionsStore_Addressvalidator_Model_Observer extends Mage_Core_Model_Ab
 		{
 			$address = $quote->getBillingAddress();
 		} else {
-		
+			
 			$address = $quote->getShippingAddress();
 		}
 		
@@ -67,34 +77,37 @@ class ExtensionsStore_Addressvalidator_Model_Observer extends Mage_Core_Model_Ab
 			$postData = $request->getParam('shipping');
 		}
 		
+		if (!$postData && $request->getParam('av-popup')){
+			$postData = $request->getParam('av-popup');
+		}
+		
 		//validate country
 		$countryId = @$postData['country_id'];
+		$countryId = ($countryId) ? $countryId : $address->getCountryId();
 		$countries = Mage::getStoreConfig('extensions_store_addressvalidator/configuration/countries',$storeId);
 		$countries = explode(',',$countries);
 		if (!in_array($countryId, $countries)){
 			return $observer;
 		}
 		
-		//already validated
-		$addressValidated = @$postData['address_validated'];
-		if ($addressValidated) {
-			$postData['customer_address_id'] = (is_numeric($addressValidated) && $addressValidated>1) ? $addressValidated : $address->getCustomerAddressId();
-			$postData['address_id'] = (isset($postData['address_id']) && $postData['address_id']>0) ? $postData['address_id']: $address->getId();
-			if (!$postData['address_id']){
-				unset($postData['address_id']);
-			}
-			$helper->setAddressData($address, $postData, isset($postData['address_id']));
-			return $observer;
-		}
-		
-		//skip validation if customer address has already been validated
 		$addressId = $request->getParam('billing_address_id');
 		if (!$addressId){
 			$addressId = $request->getParam('shipping_address_id');
 		}
+		
+		//already validated
+		$addressValidated = $request->getParam('address_validated');
+		$addressValidated = ($addressValidated) ? $addressValidated: @$postData['address_validated'];
+		if ($addressValidated) {
+			$postData['customer_address_id'] = (is_numeric($addressValidated) && $addressValidated>1) ? $addressValidated : $address->getCustomerAddressId();
+			$helper->setAddressData($address, $postData, true);
+			Mage::getSingleton('checkout/session')->setAddressValidated(true);//needed by paypal
+			return $observer;
+		}
+		
+		//skip validation if customer address has already been validated
 		$validatedAddress = Mage::getModel('extensions_store_addressvalidator/address');
 		$validatedAddress->load($addressId, 'address_id');
-		
 		if ($validatedAddress->getId() && $validatedAddress->getValidated()){
 			return $observer;
 		}
@@ -182,7 +195,7 @@ class ExtensionsStore_Addressvalidator_Model_Observer extends Mage_Core_Model_Ab
 				$responseBody = json_decode($body, true);
 				$responseBody = (is_array($responseBody)) ? $responseBody : array('update_content'=>$body);//paypal
 				$responseBody['goto_section'] = '';
-				//light checkout 
+				//light checkout
 				if ($checkoutType == 'lightcheckout' && isset($responseBody['section']) && $responseBody['section']=='centinel'){
 					if (!$result['error'] || !$allowBypass){
 						$responseBody['section'] = 'addressvalidator';
@@ -246,7 +259,7 @@ class ExtensionsStore_Addressvalidator_Model_Observer extends Mage_Core_Model_Ab
 	
 	/**
 	 * Add address js before billing block html
-	 * 
+	 *
 	 * @see core_block_abstract_to_html_after
 	 * @param Varien_Event_Observer $observer
 	 * @return Varien_Event_Observer $observer
@@ -260,7 +273,7 @@ class ExtensionsStore_Addressvalidator_Model_Observer extends Mage_Core_Model_Ab
 			$html = '<script type="text/javascript" src="'. $block->getSkinUrl('js/extensions_store/addressvalidator/address.js').'"></script>'.$html;
 			$transport->setHtml($html);
 		}
-		 
+		
 		return $observer;
 	}
 	

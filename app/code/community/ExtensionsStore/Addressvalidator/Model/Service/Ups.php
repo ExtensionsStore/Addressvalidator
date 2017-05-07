@@ -84,31 +84,37 @@ class ExtensionsStore_Addressvalidator_Model_Service_Ups extends ExtensionsStore
      */
     protected function _processResponse($response) {
         
-        $return = array();
-        $return['error'] = true;
-
-        $responseJson = Mage::helper('addressvalidator')->xmlToObject($response);
-
-        $responseStatusCode = $responseJson->Response->ResponseStatusCode;
-
-        if ($responseStatusCode == 1) {
-
-            $return['error'] = false;
-            $return['data'] = (!is_array($responseJson->AddressKeyFormat)) ? array($responseJson->AddressKeyFormat) : $responseJson->AddressKeyFormat;
-
-        } else {
-            
-            $error = @$responseJson->Response->Error;
-            $message = 'An error occurred during service call to UPS.';
-            
-            if ($error && $error->ErrorCode && $error->ErrorDescription){
-                $message = $error->ErrorCode.'-'.$error->ErrorDescription;
-            }
-
-            Mage::log($message, Zend_log::DEBUG, 'extensions_store_addressvalidator.log');
-            $return['error'] = false;
-            $return['data'] = $message;
-        }
+    	try {
+    		$return = array();
+    		$return['error'] = false;
+    		
+    		$responseJson = Mage::helper('addressvalidator')->xmlToObject($response);
+    		
+    		$responseStatusCode = $responseJson->Response->ResponseStatusCode;
+    		
+    		if ($responseStatusCode == 1) {
+    		
+    			$return['data'] = (!is_array($responseJson->AddressKeyFormat)) ? array($responseJson->AddressKeyFormat) : $responseJson->AddressKeyFormat;
+    		
+    		} else {
+    		
+    			$error = @$responseJson->Response->Error;
+    			$message = 'An error occurred during service call to UPS.';
+    		
+    			if ($error && $error->ErrorCode && $error->ErrorDescription){
+    				$message = $error->ErrorCode.'-'.$error->ErrorDescription;
+    			}
+    		
+    			Mage::log($message, Zend_log::DEBUG, 'extensions_store_addressvalidator.log');
+    			$return['data'] = $message;
+    		}
+    		
+    	}catch (Exception $e){
+    		$return['error'] = true;
+    		$message = $e->getMessage();
+    		Mage::log($message, Zend_log::ERR, 'extensions_store_addressvalidator.log');
+    		$return['data'] = $message;
+    	}
 
         return $return;
     }

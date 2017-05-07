@@ -6,44 +6,54 @@
  * @package    ExtensionsStore_Addressvalidator
  * @author     Extensions Store <admin@extensions-store.com>
  */
-
-$helper = $this->helper('addressvalidator');
-if ($helper->enabled()){
-	$storeId = Mage::app()->getStore()->getId();
-	$tooManyAttemptsUrl = Mage::getStoreConfig('extensions_store_addressvalidator/configuration/too_many_attempts_url',$storeId);
-	$customerServiceUrl = $this->getUrl($tooManyAttemptsUrl);
-?>
+$helper = $this->helper ( 'addressvalidator' );
+if ($helper->enabled ()) {
+	$storeId = Mage::app ()->getStore ()->getId ();
+	$tooManyAttemptsUrl = Mage::getStoreConfig ( 'extensions_store_addressvalidator/configuration/too_many_attempts_url', $storeId );
+	$customerServiceUrl = $this->getUrl ( $tooManyAttemptsUrl );
+	?>
 <div id="av-popup" style="display: none">
-    <div id="av-popup-overlay"></div>
-    <div id="av-popup-content">
-        <form>
-            <input type="hidden" id="address-form" name="address_form" value="" />
-            <div class="av-message"></div>
-            <ul class='radios'>
-            </ul>
-            <div class="button-set buttons actions">
-                <button class="button back">
-                    <span><span><?php echo $this->__('Back') ?></span></span>
-                </button>
-                <button class="button select">
-                    <span><span><?php echo $this->__('Select') ?></span></span>
-                </button>
-                <button class="button skip">
-                    <span><span><?php echo $this->__('Skip') ?></span></span>
-                </button>
-                <button class="button okay" href="<?php echo $customerServiceUrl ?>">
-                    <span><span><?php echo $this->__('Customer Service') ?></span></span>
-                </button>
-            </div>				
-        </form>        
-    </div>
+	<div id="av-popup-overlay"></div>
+	<div id="av-popup-content">
+		<form name="av-popup-form" id="av-popup-form">
+			<input type="hidden" id="address-form" name="address_form" value="" />
+			<input type="hidden" name="address_validated" class="address-validated" id="address-validated" value="<?php echo (int)Mage::getSingleton('checkout/session')->getAddressValidated(); ?>" />
+			<input type="hidden" name="skip_validation" id="skip-validation" value="<?php echo (int)Mage::getSingleton('checkout/session')->getSkipValidation(); ?>" />
+			<input type="hidden" name="is_virtual" id="is-virtual" value="<?php echo (int)Mage::getSingleton('checkout/session')->getQuote()->isVirtual(); ?>" />
+			<input type="hidden" name="av-popup[street][]" id="av-popup:street1" />
+			<input type="hidden" name="av-popup[street][]" id="av-popup:street2" />
+			<input type="hidden" name="av-popup[city]" id="av-popup:city" /> 
+			<input type="hidden" name="av-popup[region_id]" id="av-popup:region" /> 
+			<input type="hidden" name="av-popup[region_id]" id="av-popup:region_id" />
+			<input type="hidden" name="av-popup[postcode]" id="av-popup:postcode" />
+			<input type="hidden" name="av-popup[country_id]" id="av-popup:country_id" />
+			<div class="av-message"></div>
+			<ul class='radios'>
+			</ul>
+			<div class="button-set buttons actions">
+				<button class="button back">
+					<span><span><?php echo $this->__('Back') ?></span></span>
+				</button>
+				<button class="button select">
+					<span><span><?php echo $this->__('Select') ?></span></span>
+				</button>
+				<button class="button skip">
+					<span><span><?php echo $this->__('Skip') ?></span></span>
+				</button>
+				<button class="button okay" href="<?php echo $customerServiceUrl ?>">
+					<span><span><?php echo $this->__('Customer Service') ?></span></span>
+				</button>
+			</div>
+		</form>
+	</div>
 </div>
 <script>
     addressValidator.init({
+        validate_url: '<?php echo $this->getUrl('addressvalidator/index/validate') ?>',
         auto_populate: <?php echo (Mage::getStoreConfig('extensions_store_addressvalidator/configuration/auto_populate')) ? 'true' : 'false' ?>,
         allow_bypass: <?php echo (Mage::getStoreConfig('extensions_store_addressvalidator/configuration/allow_bypass')) ? 'true' : 'false' ?>
     });
 </script>
-<?php 
+<?php
 }
 ?>

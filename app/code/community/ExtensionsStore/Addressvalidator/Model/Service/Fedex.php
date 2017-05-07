@@ -100,56 +100,66 @@ class ExtensionsStore_Addressvalidator_Model_Service_Fedex extends ExtensionsSto
      */
     protected function _processResponse($response) {
         
-        $return = array();
-        $return['error'] = true;
-        
-        $responseJson = Mage::helper('addressvalidator')->xmlToObject($response);
-
-        $body = @$responseJson->Body;
-        $addressValidationReply = @$body->AddressValidationReply;
-        $highestSeverity = @$addressValidationReply->HighestSeverity;
-        $notifications = @$addressValidationReply->Notifications;
-        $statusCode = @$notifications->Code;
-        $statusMessage = @$notifications->Message;
-
-        if ($highestSeverity == 'SUCCESS') {
-            
-            $addressResults = $addressValidationReply->AddressResults;
-            $proposedAddressDetails = @$addressResults->ProposedAddressDetails;
-            $deliveryPointValidation = @$proposedAddressDetails->DeliveryPointValidation;
-            
-            if ($deliveryPointValidation && $deliveryPointValidation == 'UNCONFIRMED'){
-            	
-            	$changes = $proposedAddressDetails->Changes;
-            	$apartmentNumberRequired = false;
-            	$apartmentNumberNotFound = false;
-            	if (is_array($changes) && count($changes)>0){
-            		foreach ($changes as $change){
-            			if ($change == 'APARTMENT_NUMBER_REQUIRED'){
-            				$apartmentNumberRequired = true;
-            				break;
-            			}
-            			if ($change == 'APARTMENT_NUMBER_NOT_FOUND'){
-            				$apartmentNumberNotFound = true;
-            				break;
-            			}
-            		}
-            	}
-            	
-            	$data = ($apartmentNumberRequired) ? Mage::helper('addressvalidator')->getMessaging('apartment_required') : $change;
-            	$data = ($apartmentNumberNotFound) ? Mage::helper('addressvalidator')->getMessaging('apartment_not_found') : $data;
-            	 
-            } else {
-            	$data = (!is_array($addressResults)) ? array($addressResults) : $addressResults;
-            }
-
-            $return['error'] = false;
-            $return['data'] = $data;
-
-        } else {
-
-            Mage::log($statusCode . '-' . $statusMessage, Zend_log::DEBUG, 'extensions_store_addressvalidator.log');
-        }
+    	try {
+    		$return = array();
+    		$return['error'] = false;
+    		
+    		$responseJson = Mage::helper('addressvalidator')->xmlToObject($response);
+    		
+    		$body = @$responseJson->Body;
+    		$addressValidationReply = @$body->AddressValidationReply;
+    		$highestSeverity = @$addressValidationReply->HighestSeverity;
+    		$notifications = @$addressValidationReply->Notifications;
+    		$statusCode = @$notifications->Code;
+    		$statusMessage = @$notifications->Message;
+    		
+    		if ($highestSeverity == 'SUCCESS') {
+    		
+    			$addressResults = $addressValidationReply->AddressResults;
+    			$proposedAddressDetails = @$addressResults->ProposedAddressDetails;
+    			$deliveryPointValidation = @$proposedAddressDetails->DeliveryPointValidation;
+    			$storeId = Mage::app()->getStore()->getId();
+    			$requireApartment = Mage::getStoreConfig('extensions_store_addressvalidator/configuration/require_apartment',$storeId);
+    		
+    			if ($requireApartment && $deliveryPointValidation && $deliveryPointValidation == 'UNCONFIRMED'){
+    				 
+    				$changes = $proposedAddressDetails->Changes;
+    				$apartmentNumberRequired = false;
+    				$apartmentNumberNotFound = false;
+    				if (is_array($changes) && count($changes)>0){
+    					foreach ($changes as $change){
+    						if ($change == 'APARTMENT_NUMBER_REQUIRED'){
+    							$apartmentNumberRequired = true;
+    							break;
+    						}
+    						if ($change == 'APARTMENT_NUMBER_NOT_FOUND'){
+    							$apartmentNumberNotFound = true;
+    							break;
+    						}
+    					}
+    				}
+    				 
+    				$data = ($apartmentNumberRequired) ? Mage::helper('addressvalidator')->getMessaging('apartment_required') : $change;
+    				$data = ($apartmentNumberNotFound) ? Mage::helper('addressvalidator')->getMessaging('apartment_not_found') : $data;
+    		
+    			} else {
+    				$data = (!is_array($addressResults)) ? array($addressResults) : $addressResults;
+    			}
+    		
+    		} else {
+    		
+    			$data = $statusCode . '-' . $statusMessage;
+    			Mage::log($data, Zend_log::DEBUG, 'extensions_store_addressvalidator.log');
+    		}
+    		
+    		$return['data'] = $data;
+    		
+    	}catch (Exception $e){
+    		$return['error'] = true;
+    		$message = $e->getMessage();
+    		Mage::log($message, Zend_log::ERR, 'extensions_store_addressvalidator.log');
+    		$return['data'] = $message;
+    	}
 
         return $return;
     }

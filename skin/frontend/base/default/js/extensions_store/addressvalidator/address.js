@@ -56,28 +56,6 @@ if (Shipping){
 
 	        if (addressValidatorObj) {
 	        	addressValidator.handleResponse('co-shipping-form', addressValidatorObj);
-	        	/*
-	        	if (addressValidatorObj.hasOwnProperty('validate')){
-	        		
-	        		if (addressValidatorObj.validate === true){
-	        			
-	        			if (addressValidatorObj.error === false){
-		                    addressValidator.validateAddress('co-shipping-form', addressValidatorObj.message, addressValidatorObj.data);
-	        				
-	        			} else {
-			                if (addressValidatorObj.data.indexOf('http') != -1) {
-			                    addressValidator.redirectSupport(addressValidatorObj.message, addressValidatorObj.data);
-			                } else {
-			                    addressValidator.editAddress('co-shipping-form', addressValidatorObj.message);
-			                }
-			                return false;	        				
-	        			}
-	                    
-	        		} else if (addressValidatorObj.error === false) {
-	        			addressValidator.populate('shipping','co-shipping-form', addressValidatorObj.data);
-	        		}
-    		
-	        	} */
 	        }
 
 	        checkout.setStepResponse(response);
