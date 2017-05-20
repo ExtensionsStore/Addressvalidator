@@ -229,7 +229,7 @@ abstract class ExtensionsStore_Addressvalidator_Model_Service_Abstract extends M
                 		$value = '';
                 }
                 $addressValues	= implode(",", $addressValues);
-                $dateCreated = date('Y-m-d H:i:s');
+                $dateCreated = Mage::getSingleton('core/date')->gmtDate();
                 $quoteId = Mage::getSingleton('checkout/session')->getQuoteId();
                 $quoteAddressId = ($this->_address && $this->_address->getId()) ? $this->_address->getId() : 0;
                 $storeId = Mage::app()->getStore()->getId();

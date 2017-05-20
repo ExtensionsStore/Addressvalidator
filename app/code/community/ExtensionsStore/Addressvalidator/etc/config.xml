@@ -107,6 +107,14 @@
 					</addressvalidator_update_address_validated>
 				</observers>
 			</customer_address_save_after>
+			<log_log_clean_after>
+				<observers>
+					<addressvalidator_cleanlogs>
+						<class>extensions_store_addressvalidator/observer</class>
+						<method>cleanLogs</method>
+					</addressvalidator_cleanlogs>
+				</observers>
+			</log_log_clean_after>
 		</events>
 		<blocks>
 			<extensions_store_addressvalidator>
@@ -164,6 +172,7 @@
 				<num_results>5</num_results>
 				<num_attempts>3</num_attempts>
 				<too_many_attempts_url>contacts</too_many_attempts_url>
+				<cleanlog_days>30</cleanlog_days>
 			</configuration>
 			<ups>
 				<url>https://onlinetools.ups.com/ups.app/xml/XAV</url>

@@ -160,6 +160,13 @@
                             <show_in_store>1</show_in_store>
                             <comment><![CDATA[Optional provider for international addresses.]]></comment>
                         </service_international>
+                        <cleanlog_days translate="label">
+                            <label>Clean Logs Days</label>
+                            <frontend_type>text</frontend_type>
+                            <sort_order>140</sort_order>
+                            <show_in_default>1</show_in_default>
+                            <comment><![CDATA[Clean logs after number of days.]]></comment>
+                        </cleanlog_days>
                     </fields>
                 </configuration>
                 <messaging translate="label" module="extensions_store_addressvalidator">

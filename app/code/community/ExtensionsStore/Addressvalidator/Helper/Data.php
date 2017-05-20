@@ -249,7 +249,7 @@ class ExtensionsStore_Addressvalidator_Helper_Data extends Mage_Core_Helper_Abst
 					$customerAddress->addData ( $data );
 					$customerAddress->save ();
 					if ($customerAddress->getId ()) {
-						$datetime = date ( 'Y-m-d H:i:s' );
+						$datetime = Mage::getSingleton('core/date')->gmtDate();
 						$validatedAddress = Mage::getModel ( 'extensions_store_addressvalidator/address' );
 						$validatedAddress->load ( $customerAddress->getId (), 'address_id' );
 						$validatedAddress->setAddressId ( $customerAddress->getId () );

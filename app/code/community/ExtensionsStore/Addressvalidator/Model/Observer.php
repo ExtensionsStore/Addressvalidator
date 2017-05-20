@@ -23,13 +23,12 @@ class ExtensionsStore_Addressvalidator_Model_Observer extends Mage_Core_Model_Ab
 			return $observer;
 		}
 		$request = Mage::app()->getRequest();
-		//if customer elected to skip validation, we never validated again for this session
-		$skipValidation = (int)$request->getParam('skip_validation') || Mage::getSingleton('checkout/session')->getSkipValidation() || Mage::getSingleton('core/cookie')->get('skip_validation');
+		$skipValidation = (int)$request->getParam('skip_validation') || Mage::getSingleton('core/cookie')->get('skip_validation');
 		if ($skipValidation){
-			if (!Mage::getSingleton('checkout/session')->getSkipValidation()){
-				Mage::getSingleton('checkout/session')->setSkipValidation(true);
+			//if customer elected to skip validation, never validate again for this session
+			if ($request->getPost('skip_validation')){
+				Mage::getSingleton('core/cookie')->set('skip_validation', 1);
 			}
-			Mage::getSingleton('core/cookie')->set('skip_validation', 1);
 			return $observer;
 		}
 		$event = $observer->getEvent();
@@ -234,7 +233,7 @@ class ExtensionsStore_Addressvalidator_Model_Observer extends Mage_Core_Model_Ab
 			$validatedAddress = Mage::getModel('extensions_store_addressvalidator/address');
 			$validatedAddress->load($customerAddress->getId(), 'address_id');
 			
-			$datetime = date('Y-m-d H:i:s');
+			$datetime = Mage::getSingleton('core/date')->gmtDate();
 			$validatedAddress->setAddressId($customerAddress->getId());
 			$validatedAddress->setValidated(0);
 			
@@ -277,4 +276,23 @@ class ExtensionsStore_Addressvalidator_Model_Observer extends Mage_Core_Model_Ab
 		return $observer;
 	}
 	
+	/**
+	 * Scheduled clean up 
+	 * @see log_log_clean_after
+	 * @param Varien_Event_Observer $observer
+	 * @return Varien_Event_Observer $observer
+	 */
+	public function cleanLogs($observer){
+		$cleanLogsDays = (int)Mage::getStoreConfig('extensions_store_addressvalidator/configuration/cleanlog_days');
+		$datetime = Mage::getSingleton('core/date')->gmtDate();
+		$cleanLogsTime = strtotime($datetime . " - $cleanLogsDays DAY");
+		$cleanLogDate = date('Y-m-d H:i:s', $cleanLogsTime);
+		$resource = Mage::getSingleton('core/resource');
+		//$read = $resource->getConnection('core_read');
+		$write = $resource->getConnection('core_write');
+		$tableName = $resource->getTableName('addressvalidator/response');
+		$sql = "DELETE FROM $tableName WHERE date_created < '$cleanLogDate'";
+		$write->query($sql);
+		return $observer;
+	}
 }

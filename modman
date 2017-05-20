@@ -6,3 +6,4 @@ skin/frontend/base/default/css/extensions_store/addressvalidator.css            
 skin/frontend/base/default/images/extensions_store/addressvalidator                      skin/frontend/base/default/images/extensions_store/addressvalidator
 skin/frontend/base/default/js/extensions_store/addressvalidator.js                       skin/frontend/base/default/js/extensions_store/addressvalidator.js
 skin/frontend/base/default/js/extensions_store/addressvalidator/address.js               skin/frontend/base/default/js/extensions_store/addressvalidator/address.js
+skin/frontend/base/default/js/extensions_store/addressvalidator/review.js               skin/frontend/base/default/js/extensions_store/addressvalidator/review.js
