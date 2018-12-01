@@ -1,0 +1,39 @@
+<?php
+
+/**
+ * Address Validator popup
+ * @category    ExtensionsStore
+ * @package     ExtensionsStore_Addressvalidator
+ * @author      Extensions Store <support@extensions-store.com>
+ */
+
+	?>
+<div id="av-popup" >
+	<div id="av-popup-overlay"></div>
+	<div id="av-popup-content">
+		<form name="av-popup-form" id="av-popup-form">
+			<input type="hidden" id="address-form" name="address_form" value="" />
+			<input type="hidden" name="address_validated" class="address-validated" id="address-validated" value="" />
+			<input type="hidden" name="skip_validation" id="skip-validation" value="" />
+			<input type="hidden" name="is_virtual" id="is-virtual" value="" />
+			<input type="hidden" name="customer_service_url" id="customer-service-url" value="<?php echo $this->getCustomerServiceUrl() ?>" />
+			<input type="hidden" name="cookie_lifetime" id="cookie-lifetime" value="<?php echo $this->getCookieLifetime() ?>" />
+			
+			<div class="av-message"><?php echo $this->getPopupMessage() ?></div>
+		<?php if ($this->getErrorMessage()){?>
+			<div class="av-error-message"><?php echo $this->getErrorMessage() ?></div>
+		<?php } ?>
+		<?php if (is_array($this->getResults())){?>
+			<ul class='radios'>
+			<?php $i=0; foreach ($this->getResults() as $serviceCode => $results){ ?>
+				<?php foreach ($results as $result){?>
+					<?php if (!$result->getError()){ ?>
+				<li><label><input type="radio" class="radio av-result" name="address" value="<?php echo $i ?>" /> <?php echo __($result->getAddressString()) ?></label></li>
+					<?php  $i++; } ?>
+				<?php } ?>
+			<?php } ?>
+			</ul>
+		<?php } ?>
+		</form>
+	</div>
+</div>

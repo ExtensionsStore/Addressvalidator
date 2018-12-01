@@ -1,6 +1,6 @@
 Address Validator
 =================
-Validate billing and shipping addresses in the Magento One Page Checkout. 
+Validate billing and shipping addresses in the Magento Checkout. 
 
 Description
 -----------
@@ -10,11 +10,6 @@ addresses to choose from. Currently has support for Fedex, USPS and UPS.
 
 Install
 -------
-Modman:
-
-<pre>
-modman clone https://github.com/ExtensionsStore/Addressvalidator
-</pre>
 
 Composer:
 

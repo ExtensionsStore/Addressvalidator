@@ -1,0 +1,29 @@
+<?xml version="1.0"?>
+<!--
+/**
+ * 
+ * @category    ExtensionsStore
+ * @package     ExtensionsStore_Addressvalidator
+ * @author      Extensions Store <support@extensions-store.com>
+ */
+-->
+<config xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+	xsi:noNamespaceSchemaLocation="urn:magento:framework:ObjectManager/etc/config.xsd">
+	<type name="Magento\Checkout\Api\ShippingInformationManagementInterface">
+		<plugin name="extensions_store_addressvalidator_shipping_information_management" type="ExtensionsStore\Addressvalidator\Plugin\ShippingInformationManagement"/>
+	</type>
+	<type name="Magento\Checkout\Api\PaymentInformationManagementInterface">
+		<plugin name="extensions_store_addressvalidator_payment_information_management" type="ExtensionsStore\Addressvalidator\Plugin\PaymentInformationManagement"/>
+	</type>
+	<type name="Magento\Checkout\Api\GuestPaymentInformationManagementInterface">
+		<plugin name="extensions_store_addressvalidator_payment_information_management" type="ExtensionsStore\Addressvalidator\Plugin\PaymentInformationManagement"/>
+	</type>
+	<type name="Magento\Customer\Api\AddressRepositoryInterface">
+		<plugin name="extensions_store_addressvalidator_customer_address" type="ExtensionsStore\Addressvalidator\Plugin\CustomerAddress"/>
+	</type>
+	
+	<preference for="ExtensionsStore\Addressvalidator\Api\ValidatorRepositoryInterface" type="ExtensionsStore\Addressvalidator\Model\ValidatorRepository"/>
+	<preference for="ExtensionsStore\Addressvalidator\Api\Data\ValidatorInterface" type="ExtensionsStore\Addressvalidator\Model\Validator"/>
+	<preference for="ExtensionsStore\Addressvalidator\Api\Data\ValidatorSearchResultsInterface" type="ExtensionsStore\Addressvalidator\Model\ValidatorSearchResults"/>
+	
+</config>

@@ -1,8 +1,0 @@
-app/code/community/ExtensionsStore/Addressvalidator                                     app/code/community/ExtensionsStore/Addressvalidator
-app/design/frontend/base/default/layout/extensions_store/addressvalidator.xml            app/design/frontend/base/default/layout/extensions_store/addressvalidator.xml
-app/design/frontend/base/default/template/extensions_store/addressvalidator              app/design/frontend/base/default/template/extensions_store/addressvalidator
-app/etc/modules/ExtensionsStore_Addressvalidator.xml                                    app/etc/modules/ExtensionsStore_Addressvalidator.xml
-skin/frontend/base/default/css/extensions_store/addressvalidator.css                     skin/frontend/base/default/css/extensions_store/addressvalidator.css
-skin/frontend/base/default/images/extensions_store/addressvalidator                      skin/frontend/base/default/images/extensions_store/addressvalidator
-skin/frontend/base/default/js/extensions_store/addressvalidator.js                       skin/frontend/base/default/js/extensions_store/addressvalidator.js
-skin/frontend/base/default/js/extensions_store/addressvalidator/address.js               skin/frontend/base/default/js/extensions_store/addressvalidator/address.js

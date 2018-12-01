@@ -1,0 +1,42 @@
+<?xml version="1.0"?>
+<!-- 
+/**
+ * Address Validator extension attributes
+ * 
+ * @category    ExtensionsStore
+ * @package     ExtensionsStore_Addressvalidator
+ * @author      Extensions Store <support@extensions-store.com>
+ */
+-->
+<config xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+	xsi:noNamespaceSchemaLocation="urn:magento:framework:Api/etc/extension_attributes.xsd">
+	<extension_attributes for="Magento\Quote\Api\Data\AddressInterface">
+		<attribute code="address_validation_service" type="string">
+			<join reference_table="extensions_store_addressvalidator" reference_field="address_id" join_on_field="quote_address_id">
+				<field>service</field>
+			</join>
+		</attribute>
+		<attribute code="address_validated" type="boolean">
+			<join reference_table="extensions_store_addressvalidator" reference_field="address_id" join_on_field="quote_address_id">
+				<field>address_validated</field>
+			</join>
+		</attribute>
+		<attribute code="skip_validation" type="boolean">
+			<join reference_table="extensions_store_addressvalidator" reference_field="quote_id" join_on_field="quote_id">
+				<field>skip_validation</field>
+			</join>
+		</attribute>
+	</extension_attributes>	
+	<extension_attributes for="Magento\Sales\Api\Data\OrderAddressInterface">
+		<attribute code="address_validation_service" type="string">
+			<join reference_table="extensions_store_addressvalidator" reference_field="entity_id" join_on_field="order_address_id">
+				<field>service</field>
+			</join>
+		</attribute>
+		<attribute code="address_validated" type="boolean">
+			<join reference_table="extensions_store_addressvalidator" reference_field="entity_id" join_on_field="order_address_id">
+				<field>address_validated</field>
+			</join>
+		</attribute>
+	</extension_attributes>
+</config>

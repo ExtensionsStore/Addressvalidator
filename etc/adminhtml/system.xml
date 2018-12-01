@@ -1,0 +1,90 @@
+<?xml version="1.0"?>
+<config xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="urn:magento:module:Magento_Config:etc/system_file.xsd">
+	<system>
+		<section id="extensions_store_addressvalidator" sortOrder="510" translate="label" showInDefault="1" showInWebsite="1" showInStore="1">
+			<label>Address Validator</label>
+			<tab>sales</tab>
+			<resource>ExtensionsStore_Addressvalidator::config</resource>
+			<group id="configuration" type="text" translate="label" sortOrder="10" showInDefault="1" showInWebsite="1" showInStore="1" >
+				<label>Settings</label>
+				<field id="version" type="text" translate="label comment" showInDefault="1" showInWebsite="1" showInStore="1">
+					<label>Version</label>
+					<frontend_model>ExtensionsStore\Addressvalidator\Block\Adminhtml\System\Config\Form\Field\Version</frontend_model>
+					<comment>Magento 2 initial version.</comment>
+				</field>
+				<field id="enabled" type="select" translate="label comment" showInDefault="1" showInWebsite="1" showInStore="1">
+					<label>Enabled</label>
+					<source_model>Magento\Config\Model\Config\Source\Yesno</source_model>
+					<comment>If yes, billing/shipping addresses will be validated on checkout.</comment>
+				</field>
+				<field id="debug_mode" type="select" translate="label comment" showInDefault="1" showInWebsite="1" showInStore="1">
+					<label>Debug Mode</label>
+					<source_model>Magento\Config\Model\Config\Source\Yesno</source_model>
+					<comment>Set to yes to enable logging and unlimited attempts.</comment>
+				</field>
+				<field id="num_results" translate="label comment" showInDefault="1" showInWebsite="1" showInStore="1">
+					<label>Number of Results</label>
+					<comment>Select the number of results to show.</comment>
+				</field>
+				<field id="allow_bypass" type="select" translate="label comment" showInDefault="1" showInWebsite="1" showInStore="1">
+					<label>Allow Bypass</label>
+					<source_model>Magento\Config\Model\Config\Source\Yesno</source_model>
+					<comment>If service cannot validate address, just continue to next step.</comment>
+				</field>
+				<field id="require_apartment" type="select" translate="label comment" showInDefault="1" showInWebsite="1" showInStore="1">
+					<label>Require Apartment</label>
+					<source_model>Magento\Config\Model\Config\Source\Yesno</source_model>
+					<comment>If service returns apartment required, require it.</comment>
+				</field>
+				<field id="validate_billing_address" type="select" translate="label comment" showInDefault="1" showInWebsite="1" showInStore="1">
+					<label>Validate Billing Address</label>
+					<source_model>Magento\Config\Model\Config\Source\Yesno</source_model>
+					<comment>Enable if you want the customer billing address to be validated.</comment>
+				</field>
+				<field id="save_customer_address" type="select" translate="label comment" showInDefault="1" showInWebsite="1" showInStore="1">
+					<label>Save Customer Addresses</label>
+					<source_model>Magento\Config\Model\Config\Source\Yesno</source_model>
+					<comment>If No, validated customer addresses will not be saved.</comment>
+				</field>
+				<field id="service" type="select" translate="label comment" showInDefault="1" showInWebsite="1" showInStore="1">
+					<label>Service</label>
+					<source_model>ExtensionsStore\Addressvalidator\Model\Adminhtml\System\Config\Source\Service</source_model>
+					<comment>Select the service provider for address validation.</comment>
+				</field>
+				<field id="service2" type="select" translate="label comment" showInDefault="1" showInWebsite="1" showInStore="1">
+					<label>Secondary Service</label>
+					<source_model>ExtensionsStore\Addressvalidator\Model\Adminhtml\System\Config\Source\Service</source_model>
+					<comment>If selected, results from both services will be combined.</comment>
+				</field>
+				<field id="cleanlog_days" translate="label comment" showInDefault="1" showInWebsite="1" showInStore="1">
+					<label>Clean Logs Days</label>
+					<comment>Clean logs after number of days.</comment>
+				</field>
+			</group>
+			<group id="messaging" type="text" translate="label" sortOrder="20" showInDefault="1" showInWebsite="1" showInStore="1" >
+				<label>Popup Messaging</label>
+				<field id="matches_available" type="textarea" translate="label" showInDefault="1" showInWebsite="1" showInStore="1">
+					<label>Matches Available</label>
+					<comment>Messaging asking user to select a match found.</comment>
+				</field>
+				<field id="invalid_address" type="textarea" translate="label" showInDefault="1" showInWebsite="1" showInStore="1">
+					<label>No match found, invalid address</label>
+					<comment>Message telling user the address entered could not be matched.</comment>
+				</field>
+				<field id="apartment_required" type="textarea" translate="label" showInDefault="1" showInWebsite="1" showInStore="1">
+					<label>Apartment Required Message</label>
+					<comment>Message indicating apartment number is required on Address Line 2.</comment>
+				</field>
+				<field id="apartment_not_found" type="textarea" translate="label" showInDefault="1" showInWebsite="1" showInStore="1">
+					<label>Apartment Invalid Message</label>
+					<comment>Message indicating apartment number is invalid and to enter on Address Line 2.</comment>
+				</field>
+				<field id="show_service" type="select" translate="label comment" showInDefault="1" showInWebsite="1" showInStore="1">
+					<label>Show Service</label>
+					<source_model>Magento\Config\Model\Config\Source\Yesno</source_model>
+					<comment>Show name of service returning results. Displays in parenthesis after the result address.</comment>
+				</field>
+			</group>
+		</section>
+	</system>
+</config>

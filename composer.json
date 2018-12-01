@@ -1,18 +1,18 @@
 {
-    "name": "extensions-store/addressvalidator",
-    "license": "GPL-3.0",
-    "type": "magento-module",
-    "description": "Validate billing and shipping addresses in the One Page Checkout.",
-    "homepage": "https://github.com/ExtensionsStore/Addressvalidator.git",
-    "require": {
-        "php": ">=5.3",
-        "magento-hackathon/magento-composer-installer": "*"
-    },
-    "authors": [
-        {
-            "name": "Extensions Store",
-            "email": "admin@extensions-store.com",
-            "role": "Author/Maintainer"
-        }
-    ]
+	"name" : "extensionsstore/addressvalidator",
+	"description" : "Address Validator Magento 2 module",
+	"type" : "magento2-module",
+	"version" : "2.0.0",
+	"license" : "proprietary",
+	"require" : {
+		"php" : "~7.1.0"
+	},
+	"autoload" : {
+		"files" : [
+			"registration.php"
+		],
+		"psr-4" : {
+			"ExtensionsStore\\Addressvalidator\\" : ""
+		}
+	}
 }

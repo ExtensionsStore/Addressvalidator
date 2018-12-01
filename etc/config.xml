@@ -1,0 +1,18 @@
+<?xml version="1.0"?>
+<!--
+/**
+ * 
+ * @category    ExtensionsStore
+ * @package     ExtensionsStore_Addressvalidator
+ * @author      Extensions Store <support@extensions-store.com>
+ */
+-->
+<config>
+	<default>
+		<extensions_store_addressvalidator>
+			<configuration>
+				<version>2.0.0 beta</version>
+			</configuration>
+		</extensions_store_addressvalidator>
+	</default>
+</config>
