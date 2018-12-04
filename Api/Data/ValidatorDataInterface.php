@@ -11,7 +11,7 @@ namespace ExtensionsStore\Addressvalidator\Api\Data;
 use Magento\Framework\Api\ExtensibleDataInterface;
 
 
-interface ValidatorInterface extends ExtensibleDataInterface {
+interface ValidatorDataInterface extends ExtensibleDataInterface {
 	
 	/**
 	 * @return int

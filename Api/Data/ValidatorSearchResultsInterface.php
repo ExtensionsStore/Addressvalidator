@@ -17,7 +17,7 @@ interface ValidatorSearchResultsInterface extends SearchResultsInterface {
 	 * 
 	 * {@inheritDoc}
 	 * @see \Magento\Framework\Api\SearchResultsInterface::getItems()
-	 * @return \ExtensionsStore\Addressvalidator\Api\Data\ValidatorInterface[]
+	 * @return \ExtensionsStore\Addressvalidator\Api\Data\ValidatorDataInterface[]
 	 */
 	public function getItems();
 	
@@ -25,7 +25,7 @@ interface ValidatorSearchResultsInterface extends SearchResultsInterface {
 	 * 
 	 * {@inheritDoc}
 	 * @see \Magento\Framework\Api\SearchResultsInterface::setItems()
-	 * @param \ExtensionsStore\Addressvalidator\Api\Data\ValidatorInterface[] $items
+	 * @param \ExtensionsStore\Addressvalidator\Api\Data\ValidatorDataInterface[] $items
 	 * @return void
 	 */
 	public function setItems(array $items);

@@ -13,7 +13,7 @@ use Magento\Framework\Api\SearchCriteriaInterface;
 use Magento\Framework\Api\SortOrder;
 use Magento\Framework\Exception\NoSuchEntityException;
 use ExtensionsStore\Addressvalidator\Api\ValidatorRepositoryInterface;
-use ExtensionsStore\Addressvalidator\Api\Data\ValidatorInterface;
+use ExtensionsStore\Addressvalidator\Api\Data\ValidatorDataInterface;
 use ExtensionsStore\Addressvalidator\Api\Data\ValidatorSearchResultsInterface;
 use ExtensionsStore\Addressvalidator\Api\Data\ValidatorSearchResultsInterfaceFactory;
 use ExtensionsStore\Addressvalidator\Model\Validator;
@@ -140,16 +140,16 @@ class ValidatorRepository implements ValidatorRepositoryInterface {
 	 * {@inheritDoc}
 	 * @see \ExtensionsStore\Addressvalidator\Api\ValidatorRepositoryInterface::save()
 	 */
-	public function save(ValidatorInterface $validator) {
-		$validator->getResource()->save($validator);
-		return $validator;
+	public function save(ValidatorDataInterface $validatorData) {
+		$validatorData->getResource()->save($validatorData);
+		return $validatorData;
 	}
 	/**
 	 * 
 	 * {@inheritDoc}
 	 * @see \ExtensionsStore\Addressvalidator\Api\ValidatorRepositoryInterface::delete()
 	 */
-	public function delete(ValidatorInterface $validator) {
-		$validator->getResource()->delete($validator);
+	public function delete(ValidatorDataInterface $validatorData) {
+		$validatorData->getResource()->delete($validatorData);
 	}
 }

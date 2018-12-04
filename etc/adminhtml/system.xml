@@ -48,12 +48,12 @@
 				</field>
 				<field id="service" type="select" translate="label comment" showInDefault="1" showInWebsite="1" showInStore="1">
 					<label>Service</label>
-					<source_model>ExtensionsStore\Addressvalidator\Model\Adminhtml\System\Config\Source\Service</source_model>
+					<source_model>ExtensionsStore\Addressvalidator\Model\Config\Source\Service</source_model>
 					<comment>Select the service provider for address validation.</comment>
 				</field>
 				<field id="service2" type="select" translate="label comment" showInDefault="1" showInWebsite="1" showInStore="1">
 					<label>Secondary Service</label>
-					<source_model>ExtensionsStore\Addressvalidator\Model\Adminhtml\System\Config\Source\Service</source_model>
+					<source_model>ExtensionsStore\Addressvalidator\Model\Config\Source\Service</source_model>
 					<comment>If selected, results from both services will be combined.</comment>
 				</field>
 				<field id="cleanlog_days" translate="label comment" showInDefault="1" showInWebsite="1" showInStore="1">

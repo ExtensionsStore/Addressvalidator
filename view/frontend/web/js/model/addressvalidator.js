@@ -287,7 +287,7 @@ define([
                 addressValidated = (addressValidated) ? addressValidated : address.extensionAttributes['address_validated'];
                 var skipValidation = address.extensionAttributes['skip_validation'];
                 
-                if (skipValidation == false && addressValidated == false){
+                if (!skipValidation && !addressValidated){
                     
                     loading = true;
                     

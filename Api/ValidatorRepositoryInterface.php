@@ -10,7 +10,7 @@
 namespace ExtensionsStore\Addressvalidator\Api;
 
 use Magento\Framework\Api\SearchCriteriaInterface;
-use ExtensionsStore\Addressvalidator\Api\Data\ValidatorInterface;
+use ExtensionsStore\Addressvalidator\Api\Data\ValidatorDataInterface;
 
 interface ValidatorRepositoryInterface {
 	
@@ -18,9 +18,9 @@ interface ValidatorRepositoryInterface {
 	
 	public function getByQuote($addressType, $customerAddressId = null);
 	
-	public function save(ValidatorInterface $validator);
+	public function save(ValidatorDataInterface $validator);
 	
-	public function delete(ValidatorInterface $validator);
+	public function delete(ValidatorDataInterface $validator);
 	
 	public function getList(SearchCriteriaInterface $searchCriteria);
 }

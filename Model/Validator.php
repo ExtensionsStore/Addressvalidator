@@ -10,9 +10,10 @@
 namespace ExtensionsStore\Addressvalidator\Model;
 
 use Magento\Framework\Model\AbstractExtensibleModel;
-use ExtensionsStore\Addressvalidator\Api\Data\ValidatorInterface;
+use ExtensionsStore\Addressvalidator\Api\ValidatorInterface;
+use ExtensionsStore\Addressvalidator\Api\Data\ValidatorDataInterface;
 
-class Validator extends AbstractExtensibleModel implements ValidatorInterface {
+class Validator extends AbstractExtensibleModel implements  ValidatorInterface, ValidatorDataInterface {
 	protected $_directoryRegionFactory;
 	protected $_storeManager;
 	protected $_logger;
