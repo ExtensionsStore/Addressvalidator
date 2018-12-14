@@ -206,7 +206,7 @@ define([
             this._super();
             if (window.checkoutConfig.addressvalidator && window.checkoutConfig.addressvalidator.configuration.enabled == '1'){
             
-                var getPopup = function (mutatedAddress) {
+                var getPopup = function (mutatedAddress, addressType) {
                     if (typeof mutatedAddress.customAttributes == 'undefined'){
                         mutatedAddress.customAttributes = {};
                     }
@@ -216,7 +216,7 @@ define([
                         mutatedAddress.extensionAttributes.address_validated = null;
                         mutatedAddress.extensionAttributes.skip_validation = (getCookie('skip_validation') != null) ? getCookie('skip_validation') : false;
                     }
-                    addressvalidator.getPopup(mutatedAddress, 'shipping');
+                    addressvalidator.getPopup(mutatedAddress, addressType);
                 };
             	
                 quote.shippingAddress.subscribe(function(mutatedAddress){
