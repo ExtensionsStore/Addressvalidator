@@ -41,11 +41,17 @@ class Popup extends \ExtensionsStore\Addressvalidator\Controller\Ajax {
 				$addressType = (isset($data['address_type']) && in_array($data['address_type'], array('billing', 'shipping'))) ? $data['address_type'] : 'shipping';
 				$customerAddressId = (isset($data['customer_address_id']) && $data['customer_address_id']) ? $data['customer_address_id'] : null;
 				$validator = $validatorRepository->getByQuote($addressType, $customerAddressId);
-				$validator->setRequest($data);
-				$resultObjs = $validator->getResults();
-				if ($resultObjs){
-					$validatorRepository->save($validator);
+				$resultObjs = false;
+				$extensionAttributes = (isset($data['extension_attributes'])) ? $data['extension_attributes'] : null;
+				$addressValidated = ($extensionAttributes && isset($extensionAttributes->address_validated)) ? $extensionAttributes->address_validated : null;
+				if (!is_null($addressValidated) || !$validator->getAddressValidated()){
+					$validator->setRequest($data);
+					$resultObjs = $validator->getResults();
+					if ($resultObjs){
+						$validatorRepository->save($validator);
+					}
 				}
+
 				$resultsAr = [];
 				
 				$layout = $this->_layoutFactory->create();
@@ -69,8 +75,9 @@ class Popup extends \ExtensionsStore\Addressvalidator\Controller\Ajax {
 				}
 				
 				$html = $popup->toHtml();
+				$errorFields = $validator->getErrorFields();
 				$resultData['error'] = false;
-				$resultData['data'] = ['html'=>$html, 'results'=> $resultsAr];
+				$resultData['data'] = ['html'=>$html, 'results'=> $resultsAr, 'error_fields' => $errorFields];
 				
 				$resultJson->setData($resultData);
 				

@@ -27,6 +27,13 @@
 			</join>
 		</attribute>
 	</extension_attributes>	
+	<extension_attributes for="Magento\Customer\Api\Data\AddressInterface">
+		<attribute code="address_validated" type="boolean">
+			<join reference_table="extensions_store_addressvalidator" reference_field="address_id" join_on_field="customer_address_id">
+				<field>address_validated</field>
+			</join>
+		</attribute>
+	</extension_attributes>	
 	<extension_attributes for="Magento\Sales\Api\Data\OrderAddressInterface">
 		<attribute code="address_validation_service" type="string">
 			<join reference_table="extensions_store_addressvalidator" reference_field="entity_id" join_on_field="order_address_id">

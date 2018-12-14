@@ -10,6 +10,7 @@
 namespace ExtensionsStore\Addressvalidator\Model;
 
 use Magento\Framework\Api\SearchCriteriaInterface;
+use Magento\Framework\Api\SearchCriteriaBuilder;
 use Magento\Framework\Api\SortOrder;
 use Magento\Framework\Exception\NoSuchEntityException;
 use ExtensionsStore\Addressvalidator\Api\ValidatorRepositoryInterface;
@@ -47,7 +48,9 @@ class ValidatorRepository implements ValidatorRepositoryInterface {
 	 * @var \ExtensionsStore\Addressvalidator\Api\Data\ValidatorSearchResultsInterface
 	 */
 	protected $_searchResultFactory;
-	public function __construct(validatorFactory $validatorFactory, validatorCollectionFactory $validatorCollectionFactory, ValidatorSearchResultsInterfaceFactory $validatorSearchResultsInterfaceFactory) {
+	public function __construct(validatorFactory $validatorFactory, 
+			validatorCollectionFactory $validatorCollectionFactory, 
+			ValidatorSearchResultsInterfaceFactory $validatorSearchResultsInterfaceFactory) {
 		$this->_validatorFactory = $validatorFactory;
 		$this->_validatorCollectionFactory = $validatorCollectionFactory;
 		$this->_searchResultFactory = $validatorSearchResultsInterfaceFactory;
@@ -107,6 +110,7 @@ class ValidatorRepository implements ValidatorRepositoryInterface {
 		}
 		return $validator;
 	}
+	
 	/**
 	 *
 	 * {@inheritDoc}
@@ -122,10 +126,13 @@ class ValidatorRepository implements ValidatorRepositoryInterface {
 			$validators->addFieldToFilter('address_type', $addressType);
 			if ($customerAddressId){
 				$validator->setCustomerAddressId($customerAddressId);
-				$validators->addFieldToFilter(['quote_id', 'customer_address_id'], ['eq'=> $quoteId, 'eq'=>$customerAddressId]);
+				$validators->addFieldToFilter('quote_id', $quoteId);
+				$validators->addFieldToFilter('customer_address_id', $customerAddressId);
 			} else {
 				$validators->addFieldToFilter('quote_id', $quoteId);
 			}
+			$validators->addFieldToFilter('order_id', ['null'=>true]);
+			$sql = (string)$validators->getSelect();
 			if ($validators->getSize()>0){
 				$validator = $validators->getFirstItem();
 			}

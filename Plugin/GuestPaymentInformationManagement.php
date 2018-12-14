@@ -9,7 +9,7 @@ namespace ExtensionsStore\Addressvalidator\Plugin;
  * @package     ExtensionsStore_Addressvalidator
  * @author      Extensions Store <support@extensions-store.com>
  */
-class PaymentInformationManagement {
+class GuestPaymentInformationManagement {
 	protected $_quoteRepository;
 	protected $_orderRepository;
 	protected $_validatorFactory;
@@ -40,13 +40,13 @@ class PaymentInformationManagement {
      * @param \Magento\Quote\Api\Data\AddressInterface|null $billingAddress
 	 */
 	public function beforeSavePaymentInformation(
-			\Magento\Checkout\Api\PaymentInformationManagementInterface $subject, 
+			\Magento\Checkout\Api\GuestPaymentInformationManagementInterface $subject, 
 			$cartId,
+			$email,
 			\Magento\Quote\Api\Data\PaymentInterface $paymentMethod,
 			\Magento\Quote\Api\Data\AddressInterface $billingAddress = null
 			) {
 		
-		if ($billingAddress){
 			$billingExtensionAttributes = $billingAddress->getExtensionAttributes();
 			$skipValidation = $billingExtensionAttributes->getSkipValidation();
 			
@@ -64,7 +64,6 @@ class PaymentInformationManagement {
 					$billingValidator->updateValidator();
 				}
 			}
-		}
 	}
 	
 	/**

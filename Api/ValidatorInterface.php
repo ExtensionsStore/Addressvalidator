@@ -13,8 +13,14 @@ interface ValidatorInterface {
 	
 	/**
 	 * Get service results
-	 * @return [];
+	 * @return []
 	 */
 	public function getResults();
+	
+	/**
+	 * Address fields with errors
+	 * @return []
+	 */
+	public function getErrorFields();
 	
 }

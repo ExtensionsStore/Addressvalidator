@@ -14,8 +14,19 @@ use ExtensionsStore\Addressvalidator\Api\Data\ValidatorDataInterface;
 
 interface ValidatorRepositoryInterface {
 	
+	/**
+	 * Get by validator entity id
+	 * @param int $id
+	 * @return \ExtensionsStore\Addressvalidator\Api\ValidatorInterface
+	 */
 	public function getById($id);
 	
+	/**
+	 * Get quote
+	 * @param string $addressType
+	 * @param number $customerAddressId
+	 * @return \ExtensionsStore\Addressvalidator\Api\ValidatorInterface
+	 */
 	public function getByQuote($addressType, $customerAddressId = null);
 	
 	public function save(ValidatorDataInterface $validator);

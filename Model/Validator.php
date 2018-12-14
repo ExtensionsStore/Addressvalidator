@@ -25,6 +25,7 @@ class Validator extends AbstractExtensibleModel implements  ValidatorInterface, 
 	protected $_customerAddressRepository;
 	protected $_serviceModel;
 	protected $_request;
+	protected $_errorFields;
 		
 	const CACHE_TAG = 'extensions_store_addressvalidator';
 	
@@ -117,6 +118,7 @@ class Validator extends AbstractExtensibleModel implements  ValidatorInterface, 
 				$addressValidationService = $extensionAttributes->address_validation_service;
 				$this->setService($addressValidationService);
 			}
+			//@todo could be a customer address
 			if (isset($extensionAttributes->address_validated)){
 				$addressValidated = $extensionAttributes->address_validated;
 				$this->setAddressValidated($addressValidated);
@@ -220,10 +222,14 @@ class Validator extends AbstractExtensibleModel implements  ValidatorInterface, 
 				$results = $serviceModel->getResults($this->_request);
 				foreach ($results as $resultObj){
 					if ($resultObj->getIsCommercial()){
+						if (!$this->_getData('company')){
+							$this->_errorFields[] = 'company';
+						}
 						$this->setIsCommercial(true);
 					}
 					if ($resultObj->getApartmentRequired()){
 						$this->setApartmentRequired(true);
+						$this->_errorFields[] = 'street[1]';
 					}
 					//if main service returns error, return error messae
 					if ($serviceCode == $service && $resultObj->getError()){
@@ -237,6 +243,14 @@ class Validator extends AbstractExtensibleModel implements  ValidatorInterface, 
 		return $resultObjs;
 	}
 	
+	/**
+	 * 
+	 * {@inheritDoc}
+	 * @see \ExtensionsStore\Addressvalidator\Api\ValidatorInterface::getErrorFields()
+	 */
+	public function getErrorFields(){
+		return $this->_errorFields;
+	}
 	
 	/*
 	 * Getter and setters
