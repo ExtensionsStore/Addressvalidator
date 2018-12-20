@@ -33,7 +33,7 @@ class PaymentInformationManagement {
 	 *
      * 
      * Save billing information
-     * @param \Magento\Checkout\Api\GuestPaymentInformationManagementInterface  $subject
+     * @param \Magento\Checkout\Api\PaymentInformationManagementInterface  $subject
      * @param int $cartId
      * @param string $email
      * @param \Magento\Quote\Api\Data\PaymentInterface $paymentMethod
@@ -69,7 +69,7 @@ class PaymentInformationManagement {
 	
 	/**
 	 * 
-     * @param \Magento\Checkout\Api\GuestPaymentInformationManagementInterface $subject
+     * @param \Magento\Checkout\Api\PaymentInformationManagementInterface $subject
      * @param int $orderId
      * @param string $cartId
      * @param string $email
@@ -77,7 +77,7 @@ class PaymentInformationManagement {
      * @param \Magento\Quote\Api\Data\AddressInterface|null $billingAddress
 	 */
 	public function afterSavePaymentInformationAndPlaceOrder(
-			\Magento\Checkout\Api\GuestPaymentInformationManagementInterface $subject, 
+			\Magento\Checkout\Api\PaymentInformationManagementInterface $subject, 
 			$orderId,
 			$cartId,
 			$email,
