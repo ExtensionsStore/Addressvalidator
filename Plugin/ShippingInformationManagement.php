@@ -13,14 +13,18 @@ class ShippingInformationManagement {
 	protected $_quoteRepository;
 	protected $_validatorFactory;
 	protected $_validatorRepositoryFactory;
+	protected $_scopeConfig;
 	
-	public function __construct(\Magento\Quote\Model\QuoteRepository $quoteRepository, 
+	public function __construct(\Magento\Quote\Model\QuoteRepository $quoteRepository,
 			\ExtensionsStore\Addressvalidator\Model\ValidatorFactory $validatorFactory,
-			\ExtensionsStore\Addressvalidator\Model\ValidatorRepositoryFactory $validatorRespositoryFactory
+			\ExtensionsStore\Addressvalidator\Model\ValidatorRepositoryFactory $validatorRespositoryFactory,
+			\Magento\Framework\App\Config\ScopeConfigInterface $scopeConfig
 			) {
-		$this->_quoteRepository = $quoteRepository;
-		$this->_validatorFactory = $validatorFactory;
-		$this->_validatorRepositoryFactory = $validatorRespositoryFactory;
+				$this->_quoteRepository = $quoteRepository;
+				$this->_validatorFactory = $validatorFactory;
+				$this->_validatorRepositoryFactory = $validatorRespositoryFactory;
+				$this->_scopeConfig = $scopeConfig;
+				$this->_enabled = $this->_scopeConfig->getValue('extensions_store_addressvalidator/configuration/enabled',\Magento\Store\Model\ScopeInterface::SCOPE_STORE);
 	}
 	
 	/**
@@ -29,46 +33,47 @@ class ShippingInformationManagement {
 	 * @param $cartId
 	 * @param \Magento\Quote\Model\Quote\Address $address
 	 */
-	public function beforeSaveAddressInformation(\Magento\Checkout\Api\ShippingInformationManagementInterface $subject, 
+	public function beforeSaveAddressInformation(\Magento\Checkout\Api\ShippingInformationManagementInterface $subject,
 			$cartId, \Magento\Checkout\Api\Data\ShippingInformationInterface $addressInformation) {
-								
-			$billingAddress = $addressInformation->getBillingAddress();
-			$shippingAddress = $addressInformation->getShippingAddress();
-			$billingExtensionAttributes = $billingAddress->getExtensionAttributes();
-			$shippingExtensionAttributes = $shippingAddress->getExtensionAttributes();
-			$skipValidation = $billingExtensionAttributes->getSkipValidation() || $shippingExtensionAttributes->getSkipValidation();
-			
-			if (!$skipValidation){
-				$validatorRepository = $this->_validatorRepositoryFactory->create();
-				$billingValidator = $validatorRepository->getByQuote('billing');
-				$shippingValidator = $validatorRepository->getByQuote('shipping');
 				
-				$billingAddressValidated = $billingExtensionAttributes->getAddressValidated();
-				$shippingAddressValidated = $shippingExtensionAttributes->getAddressValidated();
-				$billingAddressValidationService = $billingExtensionAttributes->getAddressValidationService();
-				$shippingAddressValidationService = $shippingExtensionAttributes->getAddressValidationService();
-				
-				if (!$billingValidator->getId()){
-					$billingAddressData = $shippingValidator->getData();
-					unset($billingAddressData['id']);
-					unset($billingAddressData['quote_address_id']);
-					unset($billingAddressData['order_address_id']);
+				if ($this->_enabled){
+					$billingAddress = $addressInformation->getBillingAddress();
+					$shippingAddress = $addressInformation->getShippingAddress();
+					$billingExtensionAttributes = $billingAddress->getExtensionAttributes();
+					$shippingExtensionAttributes = $shippingAddress->getExtensionAttributes();
+					$skipValidation = $billingExtensionAttributes->getSkipValidation() || $shippingExtensionAttributes->getSkipValidation();
+					
+					if (!$skipValidation){
+						$validatorRepository = $this->_validatorRepositoryFactory->create();
+						$billingValidator = $validatorRepository->getByQuote('billing');
+						$shippingValidator = $validatorRepository->getByQuote('shipping');
+						
+						$billingAddressValidated = $billingExtensionAttributes->getAddressValidated();
+						$shippingAddressValidated = $shippingExtensionAttributes->getAddressValidated();
+						$billingAddressValidationService = $billingExtensionAttributes->getAddressValidationService();
+						$shippingAddressValidationService = $shippingExtensionAttributes->getAddressValidationService();
+						
+						if (!$billingValidator->getId()){
+							$billingAddressData = $shippingValidator->getData();
+							unset($billingAddressData['id']);
+							unset($billingAddressData['quote_address_id']);
+							unset($billingAddressData['order_address_id']);
+						}
+						$billingAddressData['address_type'] = 'billing';
+						$billingAddressData['address_validated'] = $billingAddressValidated;
+						$billingAddressData['service'] = $billingAddressValidationService;
+						
+						$shippingAddressData['address_type'] = 'shipping';
+						$shippingAddressData['address_validated'] = $shippingAddressValidated;
+						$shippingAddressData['service'] = $shippingAddressValidationService;
+						
+						$billingValidator->addData($billingAddressData);
+						$billingValidator->updateValidator();
+						$validatorRepository->save($billingValidator);
+						$shippingValidator->addData($shippingAddressData);
+						$shippingValidator->updateValidator();
+						$validatorRepository->save($shippingValidator);
+					}
 				}
-				$billingAddressData['address_type'] = 'billing';
-				$billingAddressData['address_validated'] = $billingAddressValidated;
-				$billingAddressData['service'] = $billingAddressValidationService;
-				
-				$shippingAddressData['address_type'] = 'shipping';
-				$shippingAddressData['address_validated'] = $shippingAddressValidated;
-				$shippingAddressData['service'] = $shippingAddressValidationService;
-								
-				$billingValidator->addData($billingAddressData);
-				$billingValidator->updateValidator();
-				$validatorRepository->save($billingValidator);
-				$shippingValidator->addData($shippingAddressData);
-				$shippingValidator->updateValidator();
-				$validatorRepository->save($shippingValidator);
-			}
-
 	}
 }
